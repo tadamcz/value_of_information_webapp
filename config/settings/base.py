@@ -41,12 +41,16 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-# DATABASES = {
-#     "default": env.db(
-#         "DATABASE_URL",
-#         default="postgres:///value_of_information_webapp",
-#     ),
-# }
+DATABASES = {
+    'default': {
+        # We are using SQLite as database, because we currently
+        # only need the database for the tasks queue.
+        # So we don't need to persist anything.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ROOT_DIR / 'db.sqlite3',
+    }
+}
+
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -77,6 +81,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django_q"
 ]
 
 LOCAL_APPS = [
@@ -277,3 +282,13 @@ SOCIALACCOUNT_FORMS = {"signup": "value_of_information_webapp.users.forms.UserSo
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default'
+}

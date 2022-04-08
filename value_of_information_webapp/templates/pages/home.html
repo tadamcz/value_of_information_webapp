@@ -1,5 +1,44 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-Calculate the expected value of receiving a signal.
+  Calculate the expected value of receiving a signal.
+
+
+  For the current demo, you can only use the following hard-coded values:
+  <code>
+    prior = scipy.stats.norm(1, 1)
+    study_sample_size = 100
+    population_std_dev = 20
+    bar = 5
+    max_iterations=10
+  </code>
+
+  <pre id="result">
+
+  </pre>
+
+  <form method="post">
+    {% crispy form %}
+  </form>
+
+
+  <script>
+    function check_on_background_task(id) {
+      console.log('checking on task', id);
+      $.ajax(
+        {url: '/get_result/' + id}
+      ).done(function (data) {
+        if (data.done) {
+          console.log(data)
+          $("#result").text(data.console_output)
+        } else {
+          $("#result").text("Waiting...")
+          setTimeout(check_on_background_task, 500, id)
+        }
+      });
+    }
+
+    check_on_background_task("{{ task_id }}")
+  </script>
+
 {% endblock content %}
