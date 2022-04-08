@@ -149,14 +149,14 @@ version = "0.0.0"
 description = ""
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8.12,<3.11"
 develop = true
 
 [package.dependencies]
-numpy = "*"
-pytest = "*"
-scipy = "*"
-sortedcontainers = "*"
+numpy = "^1.22.3"
+pytest = "^7.1.1"
+scipy = "^1.8.0"
+sortedcontainers = "^2.4.0"
 
 [package.source]
 type = "directory"
