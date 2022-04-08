@@ -43,6 +43,7 @@ django-debug-toolbar = "3.2.4"
 django-extensions = "3.1.5"
 django-coverage-plugin = "2.0.2"
 pytest-django = "4.5.2"
+value-of-information = { path = "./value-of-information/"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

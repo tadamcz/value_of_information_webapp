@@ -1,3 +1,9 @@
+# how to pull in submodules
+
+```shell
+git submodule update --recursive --init
+```
+
 # value_of_information_webapp
 
 Calculate the expected value of receiving a signal
