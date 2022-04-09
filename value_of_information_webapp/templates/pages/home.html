@@ -5,29 +5,21 @@
 {% block content %}
     Calculate the expected value of receiving a signal.
 
-
-    For the current demo, you can only use the following hard-coded values:
-    <code>
-        prior = scipy.stats.norm(1, 1)
-        study_sample_size = 100
-        population_std_dev = 20
-        bar = 5
-        max_iterations=10
-    </code>
-
-
-
     {% if task_id %}
-        <div class="card">
+        <div class="card mb-2" id="statusContainer">
+            <div class="card-header">Task status</div>
             <div class="card-body">
-                Task status:
                 <pre id="status"></pre>
             </div>
         </div>
+
+        <div class="card mb-2" id="resultContainer" style="visibility: hidden">
+            <div class="card-header">Results</div>
+            <pre class="card-body" id="result"></pre>
+        </div>
     {% endif %}
 
-    <pre id="result">
-  </pre>
+
 
     <form method="post">
         {% crispy form %}
@@ -36,7 +28,7 @@
 
     <script>
         {% if task_id %}
-            const submitted_at = new Date("{{ task_submitted }}"*1000)
+            const submitted_at = new Date("{{ task_submitted }}" * 1000)
         {% endif %}
         function check_on_background_task(id) {
             console.log('checking on task', id);
@@ -49,13 +41,21 @@
                         'time_taken': data.time_taken
                     }
                     $("#result").text(data.console_output)
+                    $("#resultContainer").css('visibility', 'visible')
+                    if (data.success) {
+                        $("#statusContainer").addClass('border-success')
+                    } else {
+                        $("#statusContainer").addClass('border-danger')
+                    }
+
                 } else {
-                    const checked_at = new Date(data.task_checked*1000)
-                    submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    const checked_at = new Date(data.task_checked * 1000)
+                    const submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    const checked_string = `${checked_at.toLocaleTimeString()} (${formatDate(checked_at)})`
                     task_status = {
                         'completed': data.completed, 'queue_size': data.queue_size,
-                        'last_checked': checked_at.toLocaleTimeString(),
-                        'submitted':submitted_string
+                        'last_checked': checked_string,
+                        'submitted': submitted_string
                     }
                     setTimeout(check_on_background_task, 500, id)
                 }
