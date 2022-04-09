@@ -1,6 +1,8 @@
+import datetime
 import hashlib
 import os
 import subprocess
+import time
 
 import django_q
 from django.http import JsonResponse
@@ -33,6 +35,7 @@ def home(request):
 
 		return render(request, 'pages/home.html', context={
 			'task_id': task_id,
+			'task_submitted': time.time(),
 			'form': EmptyForm()
 		})
 
@@ -45,7 +48,7 @@ def get_result(request, task_id):
 	task = django_q.tasks.fetch(task_id)
 	if task is None:
 		q_size = django_q.tasks.queue_size()
-		return JsonResponse({'done': False, 'queue_size': q_size})
+		return JsonResponse({'completed': False, 'queue_size': q_size, 'task_checked': time.time()})
 	else:
 		return JsonResponse(
-			{'done': True, 'console_output': task.result, 'success': task.success, 'time_taken': task.time_taken()})
+			{'completed': True, 'console_output': task.result, 'success': task.success, 'time_taken': task.time_taken()})

@@ -1,64 +1,72 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load tz %}
+
 {% block content %}
-  Calculate the expected value of receiving a signal.
+    Calculate the expected value of receiving a signal.
 
 
-  For the current demo, you can only use the following hard-coded values:
-  <code>
-    prior = scipy.stats.norm(1, 1)
-    study_sample_size = 100
-    population_std_dev = 20
-    bar = 5
-    max_iterations=10
-  </code>
+    For the current demo, you can only use the following hard-coded values:
+    <code>
+        prior = scipy.stats.norm(1, 1)
+        study_sample_size = 100
+        population_std_dev = 20
+        bar = 5
+        max_iterations=10
+    </code>
 
 
-
-{% if task_id %}
-    <div class="card">
-        <div class="card-body">
-          Task status:
-          <pre id="status"></pre>
-        </div>
-    </div>
-{% endif %}
-
-  <pre id="result">
-  </pre>
-
-  <form method="post">
-    {% crispy form %}
-  </form>
-
-
-  <script>
-    function check_on_background_task(id) {
-      console.log('checking on task', id);
-      $.ajax(
-        {url: '/get_result/' + id}
-      ).done(function (data) {
-        if (data.done) {
-          task_status = {
-            'done': data.done, 'success': data.success,
-            'time_taken': data.time_taken
-          }
-          $("#status").text(JSON.stringify(task_status))
-          $("#result").text(data.console_output)
-        } else {
-          task_status = {
-            'done': data.done, 'queue_size': data.queue_size,
-            'last_checked':new Date().toTimeString(),
-          }
-          $("#status").text(JSON.stringify(task_status))
-          setTimeout(check_on_background_task, 500, id)
-        }
-      });
-    }
 
     {% if task_id %}
-        check_on_background_task("{{ task_id }}")
+        <div class="card">
+            <div class="card-body">
+                Task status:
+                <pre id="status"></pre>
+            </div>
+        </div>
     {% endif %}
-  </script>
+
+    <pre id="result">
+  </pre>
+
+    <form method="post">
+        {% crispy form %}
+    </form>
+
+
+    <script>
+        {% if task_id %}
+            const submitted_at = new Date("{{ task_submitted }}"*1000)
+        {% endif %}
+        function check_on_background_task(id) {
+            console.log('checking on task', id);
+            $.ajax(
+                {url: '/get_result/' + id}
+            ).done(function (data) {
+                if (data.completed) {
+                    task_status = {
+                        'completed': data.done, 'success': data.success,
+                        'time_taken': data.time_taken
+                    }
+                    $("#result").text(data.console_output)
+                } else {
+                    const checked_at = new Date(data.task_checked*1000)
+                    submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    task_status = {
+                        'completed': data.completed, 'queue_size': data.queue_size,
+                        'last_checked': checked_at.toLocaleTimeString(),
+                        'submitted':submitted_string
+                    }
+                    setTimeout(check_on_background_task, 500, id)
+                }
+                $("#status").text(JSON.stringify(task_status, null, 4))
+
+            });
+        }
+
+        {% if task_id %}
+            check_on_background_task("{{ task_id }}")
+        {% endif %}
+    </script>
 
 {% endblock content %}
