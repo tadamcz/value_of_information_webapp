@@ -15,7 +15,7 @@
 
 
 
-{% if request.method == "POST" %}
+{% if task_id %}
     <div class="card">
         <div class="card-body">
           Task status:
@@ -56,7 +56,9 @@
       });
     }
 
-    check_on_background_task("{{ task_id }}")
+    {% if task_id %}
+        check_on_background_task("{{ task_id }}")
+    {% endif %}
   </script>
 
 {% endblock content %}
