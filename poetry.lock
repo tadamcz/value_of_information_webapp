@@ -1673,7 +1673,7 @@ description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8.12,<3.9"
-develop = false
+develop = true
 
 [package.dependencies]
 bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "f0536058240f477703abc006778d7692e44a824f"}
@@ -1772,7 +1772,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "3.8.13"
-content-hash = "047bad97c5304e652db9df2a770051cf320b6aa912a72f2310c7fa446c8d4b35"
+content-hash = "f73a04f8b56766c53d37dcf8ccc36ca9ca5aef37b2c3c8a9c77126852bfd9cf6"
 
 [metadata.files]
 alabaster = [
