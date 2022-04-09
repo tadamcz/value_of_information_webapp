@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -21,8 +22,14 @@ def home(request):
         parameters = dict(request.POST)
         del parameters['csrfmiddlewaretoken']
         parameters = str(parameters)
-        application_hash = subprocess.check_output(
-            ['git', 'rev-parse', 'HEAD']).decode().strip()
+        try:
+            # Development
+            application_hash = subprocess.check_output(
+                ['git', 'rev-parse', 'HEAD']).decode().strip()
+        except subprocess.CalledProcessError:
+            # Production (with Dokku)
+            os.environ.get('GIT_REV')
+
 
         query_uid = application_hash+parameters
         # We use hashblib because we don't want Python hash randomization
