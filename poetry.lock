@@ -150,7 +150,7 @@ description = ""
 category = "main"
 optional = false
 python-versions = ">=3.8.12,<3.11"
-develop = true
+develop = false
 
 [package.dependencies]
 numpy = "^1.22.3"
@@ -159,8 +159,10 @@ scipy = "^1.8.0"
 sortedcontainers = "^2.4.0"
 
 [package.source]
-type = "directory"
-url = "value-of-information/bayes_continuous"
+type = "git"
+url = "https://github.com/tadamcz/bayes-continuous.git"
+reference = "f0536058240f477703abc006778d7692e44a824f"
+resolved_reference = "f0536058240f477703abc006778d7692e44a824f"
 
 [[package]]
 name = "black"
@@ -1670,11 +1672,11 @@ version = "0.0.0"
 description = ""
 category = "main"
 optional = false
-python-versions = ">=3.8,<3.9"
+python-versions = ">=3.8.12,<3.9"
 develop = false
 
 [package.dependencies]
-bayes_continuous = {path = "bayes_continuous", develop = true}
+bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "f0536058240f477703abc006778d7692e44a824f"}
 metalogistic = "^0.0.9"
 numpy = "^1.22.3"
 pandas = "^1.4.1"
