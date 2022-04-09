@@ -271,7 +271,6 @@ SOCIALACCOUNT_FORMS = {"signup": "value_of_information_webapp.users.forms.UserSo
 # ------------------------------------------------------------------------------
 Q_CLUSTER = {
     'name': 'DjangORM',
-    'workers': 1,
     'max_attempts':1,
     'ack_failures': True,
     'timeout': None,
