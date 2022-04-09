@@ -47,6 +47,7 @@ def home(request):
 				'form': simulation_form
 			})
 
+		# todo refactor
 		max_iterations = simulation_form.cleaned_data['max_iterations']
 		study_sample_size = simulation_form.cleaned_data['study_sample_size']
 		population_std_dev = simulation_form.cleaned_data['population_std_dev']
