@@ -1,0 +1,15 @@
+{
+	"scripts": {
+		"dokku": {
+			"predeploy": "python manage.py makemigrations && python manage.py migrate"
+		}
+	},
+	"formation": {
+		"web": {
+			"quantity": 1
+		},
+		"worker": {
+			"quantity": 2
+		}
+	}
+}
