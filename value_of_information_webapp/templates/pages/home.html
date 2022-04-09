@@ -30,6 +30,8 @@
 
 
     <script>
+        let wait_ms = 100
+        const max_wait_ms = 3000
         {% if task_id %}
             const submitted_at = new Date("{{ task_submitted }}" * 1000)
         {% endif %}
@@ -54,13 +56,14 @@
                 } else {
                     const checked_at = new Date(data.task_checked * 1000)
                     const submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
-                    const checked_string = `${checked_at.toLocaleTimeString()} (${formatDate(checked_at)})`
+                    const checked_string = `${checked_at.toLocaleTimeString()}`
                     task_status = {
                         'completed': data.completed, 'queue_size': data.queue_size,
                         'last_checked': checked_string,
                         'submitted': submitted_string
                     }
-                    setTimeout(check_on_background_task, 500, id)
+                    wait_ms = Math.min(wait_ms*1.2,max_wait_ms)
+                    setTimeout(check_on_background_task, wait_ms, id)
                 }
                 $("#status").text(JSON.stringify(task_status, null, 4))
 

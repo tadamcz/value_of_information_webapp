@@ -6,7 +6,7 @@ function formatDate(date) {
   let hour = date.getHours();
   let minutes = date.getMinutes();
   let diffMs = new Date() - date;
-  let diffSec = Math.round(diffMs / 1000);
+  let diffSec = diffMs / 1000;
   let diffMin = diffSec / 60;
   let diffHour = diffMin / 60;
 
@@ -20,9 +20,9 @@ function formatDate(date) {
   if (diffSec < 1) {
     return 'right now';
   } else if (diffMin < 1) {
-    return `${diffSec} sec. ago`
+    return `${diffSec.toFixed(0)} sec. ago`
   } else if (diffHour < 1) {
-    return `${diffMin} min. ago`
+    return `${diffMin.toPrecision(2)} min. ago`
   } else {
     return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
   }
