@@ -1,9 +1,4 @@
 {
-	"scripts": {
-		"dokku": {
-			"predeploy": "python manage.py migrate"
-		}
-	},
 	"formation": {
 		"web": {
 			"quantity": 1
