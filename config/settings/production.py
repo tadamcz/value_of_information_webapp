@@ -45,8 +45,6 @@ MIDDLEWARE.extend([
 ])
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-INSTALLED_APPS.remove('django.contrib.staticfiles')
-
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
