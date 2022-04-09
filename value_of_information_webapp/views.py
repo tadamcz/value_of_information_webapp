@@ -28,7 +28,7 @@ def home(request):
                 ['git', 'rev-parse', 'HEAD']).decode().strip()
         except subprocess.CalledProcessError:
             # Production (with Dokku)
-            os.environ.get('GIT_REV')
+            application_hash = os.environ.get('GIT_REV')
 
 
         query_uid = application_hash+parameters
