@@ -282,13 +282,12 @@ SOCIALACCOUNT_FORMS = {"signup": "value_of_information_webapp.users.forms.UserSo
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-
 Q_CLUSTER = {
     'name': 'DjangORM',
-    'workers': 4,
-    'timeout': 90,
-    'retry': 120,
-    'queue_limit': 50,
-    'bulk': 10,
+    'workers': 1,
+    'max_attempts':1,
+    'ack_failures': True,
+    'timeout': None,
+    'retry': int(1e9), # 1 billion seconds = 31 years
     'orm': 'default'
 }

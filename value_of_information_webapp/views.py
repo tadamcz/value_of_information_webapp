@@ -49,9 +49,9 @@ def home(request):
 
 
 def get_result(request, task_id):
-    result = django_q.tasks.result(task_id)
-    print(result)
-    if result is None:
-        return JsonResponse({'done':False, 'console_output':None})
+    task = django_q.tasks.fetch(task_id)
+    if task is None:
+        q_size = django_q.tasks.queue_size()
+        return JsonResponse({'done':False, 'queue_size':q_size})
     else:
-        return JsonResponse({'done': True, 'console_output': result})
+        return JsonResponse({'done': True, 'console_output': task.result, 'success':task.success, 'time_taken':task.time_taken()})

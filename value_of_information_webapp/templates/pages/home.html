@@ -13,8 +13,18 @@
     max_iterations=10
   </code>
 
-  <pre id="result">
 
+
+{% if request.method == "POST" %}
+    <div class="card">
+        <div class="card-body">
+          Task status:
+          <pre id="status"></pre>
+        </div>
+    </div>
+{% endif %}
+
+  <pre id="result">
   </pre>
 
   <form method="post">
@@ -29,10 +39,18 @@
         {url: '/get_result/' + id}
       ).done(function (data) {
         if (data.done) {
-          console.log(data)
+          task_status = {
+            'done': data.done, 'success': data.success,
+            'time_taken': data.time_taken
+          }
+          $("#status").text(JSON.stringify(task_status))
           $("#result").text(data.console_output)
         } else {
-          $("#result").text("Waiting...")
+          task_status = {
+            'done': data.done, 'queue_size': data.queue_size,
+            'last_checked':new Date().toTimeString(),
+          }
+          $("#status").text(JSON.stringify(task_status))
           setTimeout(check_on_background_task, 500, id)
         }
       });
