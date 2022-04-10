@@ -38,14 +38,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 # STATIC
 # ------------------------
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE.extend([
     # Simplified static file serving.
     # https://warehouse.python.org/project/whitenoise/
     'whitenoise.middleware.WhiteNoiseMiddleware',
-)
+])
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-INSTALLED_APPS.remove('django.contrib.staticfiles')
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -110,6 +108,13 @@ LOGGING = {
             "propagate": True,
         },
     },
+}
+# DATABASES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
+
+DATABASES = {
+    "default": env.db("DATABASE_URL")
 }
 
 # Your stuff...

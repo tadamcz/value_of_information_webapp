@@ -1,5 +1,78 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load tz %}
 
 {% block content %}
-Calculate the expected value of receiving a signal.
+
+    <p class="mt-2">
+        Calculate the expected value of receiving a signal.
+    </p>
+
+    {% if task_id %}
+        <div class="card mb-2" id="statusContainer">
+            <div class="card-header">Task status</div>
+            <div class="card-body">
+                <pre id="status"></pre>
+            </div>
+        </div>
+
+        <div class="card mb-2" id="resultContainer" style="visibility: hidden">
+            <div class="card-header">Results</div>
+            <pre class="card-body" id="result"></pre>
+        </div>
+    {% endif %}
+
+
+
+    <form method="post">
+        {% crispy form %}
+    </form>
+
+
+    <script>
+        let wait_ms = 100
+        const max_wait_ms = 3000
+        {% if task_id %}
+            const submitted_at = new Date("{{ task_submitted }}" * 1000)
+        {% endif %}
+        function check_on_background_task(id) {
+            console.log('checking on task', id);
+            $.ajax(
+                {url: '/get_result/' + id}
+            ).done(function (data) {
+                if (data.completed) {
+                    task_status = {
+                        'completed': data.done, 'success': data.success,
+                        'time_taken': data.time_taken
+                    }
+                    $("#result").text(data.console_output)
+                    $("#resultContainer").css('visibility', 'visible')
+                    if (data.success) {
+                        $("#statusContainer").addClass('border-success')
+                    } else {
+                        $("#statusContainer").addClass('border-danger')
+                    }
+
+                } else {
+                    const checked_at = new Date(data.task_checked * 1000)
+                    const submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    const checked_string = `${checked_at.toLocaleTimeString()}`
+                    task_status = {
+                        'completed': data.completed, 'queue_size': data.queue_size,
+                        'last_checked': checked_string,
+                        'submitted': submitted_string
+                    }
+                    wait_ms = Math.min(wait_ms*1.2,max_wait_ms)
+                    setTimeout(check_on_background_task, wait_ms, id)
+                }
+                $("#status").text(JSON.stringify(task_status, null, 4))
+
+            });
+        }
+
+        {% if task_id %}
+            check_on_background_task("{{ task_id }}")
+        {% endif %}
+    </script>
+
 {% endblock content %}

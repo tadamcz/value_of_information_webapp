@@ -37,16 +37,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 
-# DATABASES
-# ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-# DATABASES = {
-#     "default": env.db(
-#         "DATABASE_URL",
-#         default="postgres:///value_of_information_webapp",
-#     ),
-# }
 # DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -77,6 +68,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django_q"
 ]
 
 LOCAL_APPS = [
@@ -277,3 +269,11 @@ SOCIALACCOUNT_FORMS = {"signup": "value_of_information_webapp.users.forms.UserSo
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'max_attempts':1,
+    'ack_failures': True,
+    'timeout': None,
+    'retry': int(1e9), # 1 billion seconds = 31 years
+    'orm': 'default'
+}
