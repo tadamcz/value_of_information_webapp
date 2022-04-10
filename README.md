@@ -11,13 +11,17 @@ git clone --recurse-submodules git@github.com:tadamcz/value_of_information_webap
 poetry install
 ```
 
+```shell
+poetry run python manage.py migrate # uses SQLite locally
+```
+
 ## Execution
 
 ```shell
 # In a first shell
-python manage.py qcluster
+poetry run python manage.py qcluster
 
 # In another shell
-python manage.py runserver
+poetry run python manage.py runserver
 ```
 
