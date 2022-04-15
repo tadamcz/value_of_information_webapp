@@ -15,11 +15,11 @@ from value_of_information_webapp.simulation_to_io import executor_to_io
 from value_of_information_webapp.utils import utils
 
 INITIAL_FORM_VALUES = {
-	'max_iterations': 10,
+	'max_iterations': 10_000,
 	'lognormal_prior_ev': 5,
 	'lognormal_prior_sd': 5,
 	'study_sd_of_estimator': 1,
-	'bar': 12,
+	'bar': 4,
 	'force_explicit': False,
 }
 
