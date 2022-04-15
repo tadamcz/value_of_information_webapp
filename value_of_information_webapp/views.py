@@ -18,8 +18,8 @@ INITIAL_FORM_VALUES = {
 	'max_iterations': 10_000,
 	'lognormal_prior_ev': 5,
 	'lognormal_prior_sd': 5,
-	'study_sd_of_estimator': 1,
-	'bar': 4,
+	'study_sd_of_estimator': 2,
+	'bar': 5,
 	'force_explicit': False,
 }
 
