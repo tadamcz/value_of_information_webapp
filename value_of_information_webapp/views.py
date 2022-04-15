@@ -78,14 +78,19 @@ def home(request):
 			simulation_inputs, force_explicit=force_explicit
 		)
 
-		task_id = django_q.tasks.async_task(
-			executor_to_io,
-			simulation_executor,
-			max_iterations=max_iterations,
-		)
+		count_group = django_q.tasks.count_group(query_uid)
+		if count_group == 0:
+			django_q.tasks.async_task(
+				executor_to_io,
+				simulation_executor,
+				max_iterations=max_iterations,
+				group=query_uid,
+			)
+		elif count_group != 1:
+			raise RuntimeError
 
 		return render(request, 'pages/home.html', context={
-			'task_id': task_id,
+			'task_id': query_uid,
 			'task_submitted': time.time(),
 			'form': simulation_form
 		})
@@ -96,12 +101,18 @@ def home(request):
 	})
 
 
-def get_result(request, task_id):
-	task = django_q.tasks.fetch(task_id)
-	if task is None:
+def get_result(request, query_uid):
+	task_group = django_q.tasks.fetch_group(query_uid)
+
+	if task_group is None:
 		q_size = django_q.tasks.queue_size()
 		return JsonResponse({'completed': False, 'queue_size': q_size, 'task_checked': time.time()})
 	else:
+		if len(task_group) == 1:
+			task = task_group[0]
+		else:
+			raise RuntimeError
+
 		return JsonResponse(
 			{'completed': True, 'console_output': task.result, 'success': task.success,
 			 'time_taken': task.time_taken()})

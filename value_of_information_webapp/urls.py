@@ -3,5 +3,5 @@ import views
 
 urlpatterns = [
     path('',views.home, name='home'),
-    path('get_result/<task_id>', views.get_result)
+    path('get_result/<query_uid>', views.get_result)
 ]
