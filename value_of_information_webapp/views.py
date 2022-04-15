@@ -12,14 +12,14 @@ from django.shortcuts import render
 from forms import SimulationForm
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
 from value_of_information_webapp.simulation_to_io import executor_to_io
+from value_of_information_webapp.utils import utils
 
 INITIAL_FORM_VALUES = {
 	'max_iterations': 10,
-	'lognormal_prior_mu': 1,
-	'lognormal_prior_sigma': 1,
-	'population_std_dev': 20,
-	'study_sample_size': 100,
-	'bar': 5,
+	'lognormal_prior_ev': 5,
+	'lognormal_prior_sd': 5,
+	'study_sd_of_estimator': 1,
+	'bar': 12,
 	'force_explicit': False,
 }
 
@@ -50,28 +50,31 @@ def home(request):
 
 		# todo refactor
 		max_iterations = simulation_form.cleaned_data['max_iterations']
-		study_sample_size = simulation_form.cleaned_data['study_sample_size']
-		population_std_dev = simulation_form.cleaned_data['population_std_dev']
 		bar = simulation_form.cleaned_data['bar']
+
+		study_sd_of_estimator = simulation_form.cleaned_data['study_sd_of_estimator']
 
 		normal_prior_mu = simulation_form.cleaned_data['normal_prior_mu']
 		normal_prior_sigma = simulation_form.cleaned_data['normal_prior_sigma']
-		lognormal_prior_mu = simulation_form.cleaned_data['lognormal_prior_mu']
-		lognormal_prior_sigma = simulation_form.cleaned_data['lognormal_prior_sigma']
+
+
+		lognormal_prior_ev = simulation_form.cleaned_data['lognormal_prior_ev']
+		lognormal_prior_sd = simulation_form.cleaned_data['lognormal_prior_sd']
+
+		lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=lognormal_prior_ev, sd=lognormal_prior_sd)
 
 		force_explicit = simulation_form.cleaned_data['force_explicit']
 
 		if normal_prior_mu is not None and normal_prior_sigma is not None:
 			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
-		elif lognormal_prior_mu is not None and lognormal_prior_sigma is not None:
-			prior = scipy.stats.lognorm(scale=np.exp(lognormal_prior_mu), s=lognormal_prior_sigma)
+		elif lnorm_prior_mu is not None and lnorm_prior_sigma is not None:
+			prior = scipy.stats.lognorm(scale=np.exp(lnorm_prior_mu), s=lnorm_prior_sigma)
 		else:
 			raise Exception
 
 		simulation_inputs = SimulationInputs(
 			prior=prior,
-			study_sample_size=study_sample_size,
-			population_std_dev=population_std_dev,
+			sd_B=study_sd_of_estimator,
 			bar=bar)
 
 		simulation_executor = SimulationExecutor(

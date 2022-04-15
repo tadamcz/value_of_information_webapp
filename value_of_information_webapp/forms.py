@@ -7,10 +7,9 @@ class SimulationForm(forms.Form):
 	max_iterations = forms.IntegerField(required=False)
 	normal_prior_mu = forms.FloatField(required=False)
 	normal_prior_sigma = forms.FloatField(required=False)
-	lognormal_prior_mu = forms.FloatField(required=False)
-	lognormal_prior_sigma = forms.FloatField(required=False)
-	study_sample_size = forms.FloatField()
-	population_std_dev = forms.FloatField()
+	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation (not mu!)')
+	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior std deviation (not sigma!)')
+	study_sd_of_estimator = forms.FloatField(label="Study sd(estimator) (often 'standard error')")
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
@@ -30,11 +29,11 @@ class SimulationForm(forms.Form):
 
 		normal_prior_mu = self.cleaned_data['normal_prior_mu']
 		normal_prior_sigma = self.cleaned_data['normal_prior_sigma']
-		lognormal_prior_mu = self.cleaned_data['lognormal_prior_mu']
-		lognormal_prior_sigma = self.cleaned_data['lognormal_prior_sigma']
+		lognormal_prior_ev = self.cleaned_data['lognormal_prior_ev']
+		lognormal_prior_sd = self.cleaned_data['lognormal_prior_sd']
 
 		normal = normal_prior_mu is not None and normal_prior_sigma is not None
-		lognormal = lognormal_prior_mu is not None and lognormal_prior_sigma is not None
+		lognormal = lognormal_prior_ev is not None and lognormal_prior_sd is not None
 
 		if normal and lognormal:
 			self.add_error(None, "Cannot provide normal and lognormal")
