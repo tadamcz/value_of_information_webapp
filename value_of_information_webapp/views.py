@@ -8,10 +8,10 @@ import numpy as np
 import scipy
 from django.http import JsonResponse
 from django.shortcuts import render
-from value_of_information import Simulation
 
 from forms import SimulationForm
-from value_of_information_webapp.simulation_to_io import simulation_to_io
+from value_of_information.simulation import SimulationInputs, SimulationExecutor
+from value_of_information_webapp.simulation_to_io import executor_to_io
 
 INITIAL_FORM_VALUES = {
 	'max_iterations': 10,
@@ -20,6 +20,7 @@ INITIAL_FORM_VALUES = {
 	'population_std_dev': 20,
 	'study_sample_size': 100,
 	'bar': 5,
+	'force_explicit': False,
 }
 
 
@@ -58,6 +59,8 @@ def home(request):
 		lognormal_prior_mu = simulation_form.cleaned_data['lognormal_prior_mu']
 		lognormal_prior_sigma = simulation_form.cleaned_data['lognormal_prior_sigma']
 
+		force_explicit = simulation_form.cleaned_data['force_explicit']
+
 		if normal_prior_mu is not None and normal_prior_sigma is not None:
 			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
 		elif lognormal_prior_mu is not None and lognormal_prior_sigma is not None:
@@ -65,13 +68,21 @@ def home(request):
 		else:
 			raise Exception
 
-		simulation = Simulation(
+		simulation_inputs = SimulationInputs(
 			prior=prior,
 			study_sample_size=study_sample_size,
 			population_std_dev=population_std_dev,
 			bar=bar)
 
-		task_id = django_q.tasks.async_task(simulation_to_io, simulation, max_iterations=max_iterations)
+		simulation_executor = SimulationExecutor(
+			simulation_inputs, force_explicit=force_explicit
+		)
+
+		task_id = django_q.tasks.async_task(
+			executor_to_io,
+			simulation_executor,
+			max_iterations=max_iterations,
+		)
 
 		return render(request, 'pages/home.html', context={
 			'task_id': task_id,

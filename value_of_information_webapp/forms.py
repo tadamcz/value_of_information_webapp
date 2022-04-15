@@ -12,6 +12,7 @@ class SimulationForm(forms.Form):
 	study_sample_size = forms.FloatField()
 	population_std_dev = forms.FloatField()
 	bar = forms.FloatField()
+	force_explicit = forms.BooleanField(required=False)
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -20,8 +21,8 @@ class SimulationForm(forms.Form):
 		self.helper.form_action = 'submit_parameters'
 		self.helper.add_input(Submit('submit', 'Submit'))
 		self.helper.form_class = 'form-horizontal'
-		self.helper.label_class = 'col-2'
-		self.helper.field_class = 'col-2'
+		self.helper.label_class = 'col'
+		self.helper.field_class = 'col'
 
 	def is_valid(self) -> bool:
 		if not super(SimulationForm, self).is_valid():
