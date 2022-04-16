@@ -24,23 +24,36 @@ class SimulationForm(forms.Form):
 		self.helper.field_class = 'col'
 
 	def is_valid(self) -> bool:
+		is_valid = True
 		if not super(SimulationForm, self).is_valid():
-			return False
+			is_valid = False
 
 		normal_prior_mu = self.cleaned_data['normal_prior_mu']
 		normal_prior_sigma = self.cleaned_data['normal_prior_sigma']
 		lognormal_prior_ev = self.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = self.cleaned_data['lognormal_prior_sd']
+		force_explicit = self.cleaned_data['force_explicit']
+		max_iterations = self.cleaned_data['max_iterations']
 
 		normal = normal_prior_mu is not None and normal_prior_sigma is not None
 		lognormal = lognormal_prior_ev is not None and lognormal_prior_sd is not None
 
 		if normal and lognormal:
 			self.add_error(None, "Cannot provide normal and lognormal")
-			return False
+			is_valid = False
 
 		if not normal and not lognormal:
 			self.add_error(None, "Must provide one of normal or lognormal")
-			return False
+			is_valid = False
 
-		return True
+
+		if max_iterations is not None:
+			max_iterations_max_allowed = 1800
+			if force_explicit and max_iterations>max_iterations_max_allowed:
+				self.add_error(None, f"When 'force explicit' is enabled, "
+									 f"you cannot set max iterations to more than {max_iterations_max_allowed}, "
+									 f"because it could take hours to run.")
+				is_valid = False
+
+
+		return is_valid
