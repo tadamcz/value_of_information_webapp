@@ -18,9 +18,9 @@ from value_of_information_webapp.utils import utils
 SIM_FORM_INITIAL = {
 	'max_iterations': 10_000,
 	'lognormal_prior_ev': 5,
-	'lognormal_prior_sd': 5,
+	'lognormal_prior_sd': 4,
 	'study_sd_of_estimator': 2,
-	'bar': 5,
+	'bar': 7,
 	'force_explicit': False,
 }
 C_B_FORM_INITIAL = {
