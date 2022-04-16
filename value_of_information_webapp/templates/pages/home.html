@@ -27,27 +27,52 @@
 
     <form method="post" style="max-width: 50em">
         {% csrf_token %}
-        {% for field in form %}
-            {% if field.name == 'force_explicit' %}
-                <div class="row">
-                    <div class="col">
-                        {{ field|add_label_class:"form-check-label" }}
+        <div class="mb-5">
+            <h5 class="card-title">Simulation parameters</h5>
+            {% for field in simulation_form %}
+                {% if field.name == 'force_explicit' %}
+                    <div class="row">
+                        <div class="col">
+                            {{ field|add_label_class:"form-check-label" }}
+                        </div>
+                        <div class="col">
+                            {{ field|add_class:"checkboxinput form-check-input" }}
+                        </div>
                     </div>
-                    <div class="col" >
-                        {{ field|add_class:"checkboxinput form-check-input" }}
-                    </div>
-                </div>
-            {% else %}
-                {{ field|as_crispy_field }}
-            {% endif %}
-        {% endfor %}
+                {% else %}
+                    {{ field|as_crispy_field }}
+                {% endif %}
+            {% endfor %}
 
-        <div class="mt-3 mb-3 row">
-            <div class="col"></div>
-            <div class="col">
-                <input type="submit" name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit"></div>
+            {{ simulation_form|as_crispy_errors:"bootstrap" }}
         </div>
-        {{ form|as_crispy_errors:"bootstrap" }}
+
+        <div class="mt-5">
+            <h5 class="card-title">Cost-benefit analysis (optional)</h5>
+            <p>The prior and bar must be expressed in <code>value_units</code> per <code>money_units</code> spent</p>
+            {% for field in cost_benefit_form %}
+                {% if field.name == 'force_explicit' %}
+                    <div class="row">
+                        <div class="col">
+                            {{ field|add_label_class:"form-check-label" }}
+                        </div>
+                        <div class="col">
+                            {{ field|add_class:"checkboxinput form-check-input" }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ field|as_crispy_field }}
+                {% endif %}
+            {% endfor %}
+
+            <div class="mt-3 mb-3 row">
+                <div class="col"></div>
+                <div class="col">
+                    <input type="submit" name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit">
+                </div>
+            </div>
+            {{ cost_benefit_form|as_crispy_errors:"bootstrap" }}
+        </div>
     </form>
 
 
@@ -84,7 +109,7 @@
                         'last_checked': checked_string,
                         'submitted': submitted_string
                     }
-                    wait_ms = Math.min(wait_ms*1.2,max_wait_ms)
+                    wait_ms = Math.min(wait_ms * 1.2, max_wait_ms)
                     setTimeout(check_on_background_task, wait_ms, id)
                 }
                 $("#status").text(JSON.stringify(task_status, null, 4))

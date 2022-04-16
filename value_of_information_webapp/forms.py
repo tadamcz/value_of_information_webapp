@@ -57,3 +57,43 @@ class SimulationForm(forms.Form):
 
 
 		return is_valid
+
+
+class CostBenefitForm(forms.Form):
+	value_units = forms.CharField(required=False,
+		widget=forms.TextInput(attrs={'placeholder':"For example: 'utils', 'multiples of GiveDirectly', or 'lives saved'"}))
+	money_units = forms.CharField(required=False,
+		widget=forms.TextInput(attrs={'placeholder':'For example: "$" or "M$", or "£"'}))
+	capital = forms.FloatField(required=False)
+	study_cost = forms.FloatField(required=False, label='Study cost')
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_method = 'post'
+		self.helper.form_action = 'submit_parameters'
+		self.helper.add_input(Submit('submit', 'Submit'))
+		self.helper.form_class = 'form-horizontal'
+		self.helper.label_class = 'col'
+		self.helper.field_class = 'col'
+
+	def is_valid(self) -> bool:
+		is_valid = True
+		if not super(CostBenefitForm, self).is_valid():
+			is_valid = False
+
+		if not (self.is_full() or self.is_empty()):
+			is_valid = False
+			self.add_error(None, "Must provide either all fields or no fields")
+
+		return is_valid
+
+	def is_empty(self):
+		inputs = list(self.cleaned_data.values())
+		none_or_empty_str = inputs.count(None) + inputs.count("")
+		return none_or_empty_str == len(inputs)
+
+	def is_full(self):
+		inputs = list(self.cleaned_data.values())
+		none_or_empty_str = inputs.count(None) + inputs.count("")
+		return none_or_empty_str == 0

@@ -9,18 +9,25 @@ import scipy
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from forms import SimulationForm
+from forms import SimulationForm, CostBenefitForm
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
-from value_of_information_webapp.simulation_to_io import executor_to_io
+from value_of_information.study_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
+from value_of_information_webapp.to_buffer import to_buffer
 from value_of_information_webapp.utils import utils
 
-INITIAL_FORM_VALUES = {
+SIM_FORM_INITIAL = {
 	'max_iterations': 10_000,
 	'lognormal_prior_ev': 5,
 	'lognormal_prior_sd': 5,
 	'study_sd_of_estimator': 2,
 	'bar': 5,
 	'force_explicit': False,
+}
+C_B_FORM_INITIAL = {
+	'value_units': 'utils',
+	'money_units': 'M$',
+	'capital': 100,
+	'study_cost': 5,
 }
 
 
@@ -43,9 +50,15 @@ def home(request):
 		query_uid = hashlib.md5(query_uid.encode('utf-8')).hexdigest()
 
 		simulation_form = SimulationForm(request.POST)
-		if not simulation_form.is_valid():
+		cost_benefit_form = CostBenefitForm(request.POST)
+
+		simulation_form_valid = simulation_form.is_valid()
+		cost_benefit_form_valid = cost_benefit_form.is_valid()
+
+		if not simulation_form_valid or not cost_benefit_form_valid:
 			return render(request, 'pages/home.html', context={
-				'form': simulation_form
+				'simulation_form': simulation_form,
+				'cost_benefit_form': cost_benefit_form,
 			})
 
 		# todo refactor
@@ -56,7 +69,6 @@ def home(request):
 
 		normal_prior_mu = simulation_form.cleaned_data['normal_prior_mu']
 		normal_prior_sigma = simulation_form.cleaned_data['normal_prior_sigma']
-
 
 		lognormal_prior_ev = simulation_form.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = simulation_form.cleaned_data['lognormal_prior_sd']
@@ -81,11 +93,20 @@ def home(request):
 			simulation_inputs, force_explicit=force_explicit
 		)
 
+		if cost_benefit_form.is_full():
+			cb_inputs = CostBenefitInputs(
+				**cost_benefit_form.cleaned_data
+			)
+			c_b_executor = CostBenefitsExecutor(inputs=cb_inputs)
+		else:
+			c_b_executor = None
+
 		count_group = django_q.tasks.count_group(query_uid)
 		if count_group == 0:
 			django_q.tasks.async_task(
-				executor_to_io,
-				simulation_executor,
+				to_buffer,
+				sim_executor=simulation_executor,
+				c_b_executor=c_b_executor,
 				max_iterations=max_iterations,
 				group=query_uid,
 			)
@@ -95,12 +116,13 @@ def home(request):
 		return render(request, 'pages/home.html', context={
 			'task_id': query_uid,
 			'task_submitted': time.time(),
-			'form': simulation_form
+			'simulation_form': simulation_form,
+			'cost_benefit_form': cost_benefit_form,
 		})
 
 	return render(request, 'pages/home.html', context={
-		'form': SimulationForm(
-			initial=INITIAL_FORM_VALUES)
+		'simulation_form': SimulationForm(initial=SIM_FORM_INITIAL),
+		'cost_benefit_form': CostBenefitForm(initial=C_B_FORM_INITIAL),
 	})
 
 
