@@ -5,11 +5,11 @@ from django import forms
 
 class SimulationForm(forms.Form):
 	max_iterations = forms.IntegerField(required=False)
-	normal_prior_mu = forms.FloatField(required=False)
-	normal_prior_sigma = forms.FloatField(required=False)
+	normal_prior_ev = forms.FloatField(required=False, label='Normal prior expectation')
+	normal_prior_sd = forms.FloatField(required=False, label='Normal prior s.d.')
 	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation (not mu!)')
-	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior std deviation (not sigma!)')
-	study_sd_of_estimator = forms.FloatField(label="Study sd(estimator) (often 'standard error')")
+	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior s.d. (not sigma!)')
+	study_sd_of_estimator = forms.FloatField(label="Study standard error")
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
@@ -28,8 +28,8 @@ class SimulationForm(forms.Form):
 		if not super(SimulationForm, self).is_valid():
 			is_valid = False
 
-		normal_prior_mu = self.cleaned_data['normal_prior_mu']
-		normal_prior_sigma = self.cleaned_data['normal_prior_sigma']
+		normal_prior_mu = self.cleaned_data['normal_prior_ev']
+		normal_prior_sigma = self.cleaned_data['normal_prior_sd']
 		lognormal_prior_ev = self.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = self.cleaned_data['lognormal_prior_sd']
 		force_explicit = self.cleaned_data['force_explicit']

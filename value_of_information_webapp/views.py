@@ -67,8 +67,8 @@ def home(request):
 
 		study_sd_of_estimator = simulation_form.cleaned_data['study_sd_of_estimator']
 
-		normal_prior_mu = simulation_form.cleaned_data['normal_prior_mu']
-		normal_prior_sigma = simulation_form.cleaned_data['normal_prior_sigma']
+		normal_prior_mu = simulation_form.cleaned_data['normal_prior_ev']
+		normal_prior_sigma = simulation_form.cleaned_data['normal_prior_sd']
 
 		lognormal_prior_ev = simulation_form.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = simulation_form.cleaned_data['lognormal_prior_sd']
