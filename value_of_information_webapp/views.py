@@ -73,13 +73,12 @@ def home(request):
 		lognormal_prior_ev = simulation_form.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = simulation_form.cleaned_data['lognormal_prior_sd']
 
-		lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=lognormal_prior_ev, sd=lognormal_prior_sd)
-
 		force_explicit = simulation_form.cleaned_data['force_explicit']
 
 		if normal_prior_mu is not None and normal_prior_sigma is not None:
 			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
-		elif lnorm_prior_mu is not None and lnorm_prior_sigma is not None:
+		elif lognormal_prior_ev is not None and lognormal_prior_sd is not None:
+			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=lognormal_prior_ev, sd=lognormal_prior_sd)
 			prior = scipy.stats.lognorm(scale=np.exp(lnorm_prior_mu), s=lnorm_prior_sigma)
 		else:
 			raise Exception
