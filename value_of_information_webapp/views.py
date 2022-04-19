@@ -107,6 +107,7 @@ def home(request):
 				sim_executor=simulation_executor,
 				c_b_executor=c_b_executor,
 				max_iterations=max_iterations,
+				convergence_target=0.05,
 				group=query_uid,
 			)
 		elif count_group != 1:
