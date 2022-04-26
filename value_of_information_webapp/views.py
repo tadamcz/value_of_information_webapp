@@ -115,7 +115,7 @@ def home(request):
 
 		return render(request, 'pages/home.html', context={
 			'task_id': query_uid,
-			'task_submitted': time.time(),
+			'task_submitted': time.time(),  # todo: this isn't correct when an in progress task has been submitted twice by the user
 			'simulation_form': simulation_form,
 			'cost_benefit_form': cost_benefit_form,
 		})
