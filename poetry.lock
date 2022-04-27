@@ -161,8 +161,8 @@ sortedcontainers = "^2.4.0"
 [package.source]
 type = "git"
 url = "https://github.com/tadamcz/bayes-continuous.git"
-reference = "5733329d782bb2c142b83c4469cb7bb096a5cb24"
-resolved_reference = "5733329d782bb2c142b83c4469cb7bb096a5cb24"
+reference = "26960486b84db4da6d32949c939822d882d06aba"
+resolved_reference = "26960486b84db4da6d32949c939822d882d06aba"
 
 [[package]]
 name = "black"
@@ -1745,7 +1745,7 @@ python-versions = ">=3.8.12,<3.9"
 develop = true
 
 [package.dependencies]
-bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "5733329d782bb2c142b83c4469cb7bb096a5cb24"}
+bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "26960486b84db4da6d32949c939822d882d06aba"}
 metalogistic = "^0.0.9"
 numpy = "^1.22.3"
 pandas = "^1.4.1"
