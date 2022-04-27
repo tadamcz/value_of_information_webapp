@@ -9,7 +9,7 @@ import scipy
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from forms import SimulationForm, CostBenefitForm
+from value_of_information_webapp.forms import SimulationForm, CostBenefitForm
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
 from value_of_information.study_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
 from value_of_information_webapp.to_buffer import to_buffer
@@ -34,7 +34,10 @@ C_B_FORM_INITIAL = {
 def home(request):
 	if request.method == 'POST':
 		parameters = dict(request.POST)
-		del parameters['csrfmiddlewaretoken']
+		try:
+			del parameters['csrfmiddlewaretoken']
+		except KeyError:
+			pass
 		parameters = str(parameters)
 		try:
 			# Development
