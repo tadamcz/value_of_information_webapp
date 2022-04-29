@@ -1,16 +1,14 @@
 import contextlib
 import io
-
-from value_of_information.simulation import SimulationExecutor
-from value_of_information.study_cost_benefit import CostBenefitsExecutor
+from typing import Callable
 
 
-def to_buffer(sim_executor: SimulationExecutor, c_b_executor: CostBenefitsExecutor, **kwargs):
-    with io.StringIO() as buffer, contextlib.redirect_stdout(buffer):
-        if kwargs['max_iterations'] is None:
-            kwargs.pop('max_iterations')
-        sim_run = sim_executor.execute(**kwargs)
-        if c_b_executor is not None:
-            c_b_executor.sim_run = sim_run
-            c_b_executor.execute()
-        return buffer.getvalue()
+def to_buffer(_callable: Callable, callable_args=None, callable_kwargs=None):
+	if callable_args is None:
+		callable_args = tuple()
+	if callable_kwargs is None:
+		callable_kwargs = {}
+
+	with io.StringIO() as buffer, contextlib.redirect_stdout(buffer):
+		_callable(*callable_args, **callable_kwargs)
+		return buffer.getvalue()

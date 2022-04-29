@@ -13,6 +13,16 @@ class SimulationForm(forms.Form):
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
+	# todo clean this up
+	INITIAL = {
+		'max_iterations': 10_000,
+		'lognormal_prior_ev': 5,
+		'lognormal_prior_sd': 4,
+		'study_sd_of_estimator': 2,
+		'bar': 7,
+		'force_explicit': False,
+	}
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.helper = FormHelper()
@@ -46,26 +56,33 @@ class SimulationForm(forms.Form):
 			self.add_error(None, "Must provide one of normal or lognormal")
 			is_valid = False
 
-
 		if max_iterations is not None:
 			max_iterations_max_allowed = 1800
-			if force_explicit and max_iterations>max_iterations_max_allowed:
+			if force_explicit and max_iterations > max_iterations_max_allowed:
 				self.add_error(None, f"When 'force explicit' is enabled, "
 									 f"you cannot set max iterations to more than {max_iterations_max_allowed}, "
 									 f"because it could take hours to run.")
 				is_valid = False
-
 
 		return is_valid
 
 
 class CostBenefitForm(forms.Form):
 	value_units = forms.CharField(required=False,
-		widget=forms.TextInput(attrs={'placeholder':"For example: 'utils', 'multiples of GiveDirectly', or 'lives saved'"}))
+								  widget=forms.TextInput(attrs={
+									  'placeholder': "For example: 'utils', 'multiples of GiveDirectly', or 'lives saved'"}))
 	money_units = forms.CharField(required=False,
-		widget=forms.TextInput(attrs={'placeholder':'For example: "$" or "M$", or "£"'}))
+								  widget=forms.TextInput(attrs={'placeholder': 'For example: "$" or "M$", or "£"'}))
 	capital = forms.FloatField(required=False)
 	study_cost = forms.FloatField(required=False, label='Study cost')
+
+	# todo clean this up
+	INITIAL = {
+		'value_units': 'utils',
+		'money_units': 'M$',
+		'capital': 100,
+		'study_cost': 5,
+	}
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
