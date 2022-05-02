@@ -60,8 +60,7 @@ def query(request, id):
 
 	return render(request, 'pages/home.html', context={
 		'task_id': persisted_query.q_task_id.hex,
-		# todo: this isn't correct when an in progress task has been submitted twice by the user
-		'task_submitted': time.time(),
+		'query_created': persisted_query.created_at.timestamp(),
 		'simulation_form': sim_form,
 		'cost_benefit_form': cb_form,
 	})

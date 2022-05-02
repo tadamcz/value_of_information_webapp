@@ -82,7 +82,7 @@
         let wait_ms = 100
         const max_wait_ms = 3000
         {% if task_id %}
-            const submitted_at = new Date("{{ task_submitted }}" * 1000)
+            const query_created_at = new Date("{{ query_created }}" * 1000)
         {% endif %}
         function check_on_background_task(id) {
             console.log('checking on task', id);
@@ -104,7 +104,7 @@
 
                 } else {
                     const checked_at = new Date(data.task_checked * 1000)
-                    const submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    const submitted_string = `${query_created_at.toLocaleTimeString()} (${formatDate(query_created_at)})`
                     const checked_string = `${checked_at.toLocaleTimeString()}`
                     task_status = {
                         'completed': data.completed, 'queue_size': data.queue_size,
