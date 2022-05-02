@@ -114,7 +114,7 @@ class Query:
 				['git', 'rev-parse', 'HEAD']).decode().strip()
 		except subprocess.CalledProcessError:
 			# Production (with Dokku)
-			application_hash = os.environ.get('GIT_REV')  # todo fix to raise keyerror
+			application_hash = os.environ['GIT_REV']
 
 		query_string = application_hash + parameters
 		query_hash = hashlib.md5(query_string.encode('utf-8')).hexdigest()
