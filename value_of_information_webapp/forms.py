@@ -13,15 +13,16 @@ class SimulationForm(forms.Form):
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
-	# todo clean this up
-	INITIAL = {
-		'max_iterations': 10_000,
-		'lognormal_prior_ev': 5,
-		'lognormal_prior_sd': 4,
-		'study_sd_of_estimator': 2,
-		'bar': 7,
-		'force_explicit': False,
-	}
+	@staticmethod
+	def initial():
+		return {
+			'max_iterations': 10_000,
+			'lognormal_prior_ev': 5,
+			'lognormal_prior_sd': 4,
+			'study_sd_of_estimator': 2,
+			'bar': 7,
+			'force_explicit': False,
+		}
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -76,13 +77,14 @@ class CostBenefitForm(forms.Form):
 	capital = forms.FloatField(required=False)
 	study_cost = forms.FloatField(required=False, label='Study cost')
 
-	# todo clean this up
-	INITIAL = {
-		'value_units': 'utils',
-		'money_units': 'M$',
-		'capital': 100,
-		'study_cost': 5,
-	}
+	@staticmethod
+	def initial():
+		return {
+			'value_units': 'utils',
+			'money_units': 'M$',
+			'capital': 100,
+			'study_cost': 5,
+		}
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)

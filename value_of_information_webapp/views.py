@@ -15,8 +15,8 @@ QUERY_EQUIV_CLASSES = os.environ.get('QUERY_EQUIV_CLASSES', False)
 
 def home(request):
 	return render(request, 'pages/home.html', context={
-		'simulation_form': SimulationForm(initial=SimulationForm.INITIAL),
-		'cost_benefit_form': CostBenefitForm(initial=CostBenefitForm.INITIAL),
+		'simulation_form': SimulationForm(initial=SimulationForm.initial()),
+		'cost_benefit_form': CostBenefitForm(initial=CostBenefitForm.initial()),
 	})
 
 
