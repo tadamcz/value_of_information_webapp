@@ -26,22 +26,24 @@ def normal_data():
 
 @pytest.mark.django_db
 class TestFormSubmission:
+	SUBMIT_URL = "/submit"
+
 	def test_form_error(self, normal_data, client):
 		del normal_data['bar']
 
-		response = client.post("/", data=normal_data)
+		response = client.post(self.SUBMIT_URL, data=normal_data, follow=True)
 
 		assert response.status_code == 200
 		assert django_q.tasks.queue_size() == 0
 
 	def test_normal(self, normal_data, client):
-		response = client.post("/", data=normal_data)
+		response = client.post(self.SUBMIT_URL, data=normal_data, follow=True)
 
 		assert response.status_code == 200
 		assert django_q.tasks.queue_size() == 1
 
 	def test_lognormal(self, lognormal_data, client):
-		response = client.post("/", data=lognormal_data)
+		response = client.post(self.SUBMIT_URL, data=lognormal_data, follow=True)
 
 		assert response.status_code == 200
 		assert django_q.tasks.queue_size() == 1

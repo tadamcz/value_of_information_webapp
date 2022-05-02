@@ -14,7 +14,7 @@ from value_of_information_webapp.to_buffer import to_buffer
 from value_of_information_webapp.utils import utils
 
 
-class UserQuery:
+class Query:
 	CONVERGENCE_TARGET = 0.05
 
 	def __init__(self, query_dict: QueryDict):
@@ -67,20 +67,14 @@ class UserQuery:
 		self.sim_executor = sim_executor
 
 	def send_to_queue(self):
-		query_uid = self.stable_hash()
 		self.create_executors()
-		count_group = django_q.tasks.count_group(query_uid)
 
-		if count_group == 0:
-			django_q.tasks.async_task(
-				to_buffer,
-				self.execute,
-				group=query_uid,
-			)
-		elif count_group != 1:
-			raise RuntimeError
+		task_id = django_q.tasks.async_task(
+			to_buffer,
+			self.execute,
+		)
 
-		return query_uid
+		return task_id
 
 	def execute(self):
 		sim_run = self.sim_executor.execute(
@@ -97,8 +91,14 @@ class UserQuery:
 
 		return simulation_form_valid and cost_benefit_form_valid
 
-	def stable_hash(self):
+	def equivalence_class_id(self):
 		"""
+		Returns:
+		hash(query+hash(application))
+
+		Can be used to identify queries that should return the same results,
+		(modulo sampling variation).
+
 		We use hashblib because we don't want Python hash randomization
 		see: https://docs.python.org/3/reference/datamodel.html#object.__hash__
 		"""
@@ -114,7 +114,7 @@ class UserQuery:
 				['git', 'rev-parse', 'HEAD']).decode().strip()
 		except subprocess.CalledProcessError:
 			# Production (with Dokku)
-			application_hash = os.environ.get('GIT_REV')
+			application_hash = os.environ.get('GIT_REV')  # todo fix to raise keyerror
 
 		query_string = application_hash + parameters
 		query_hash = hashlib.md5(query_string.encode('utf-8')).hexdigest()

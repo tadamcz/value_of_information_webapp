@@ -25,7 +25,9 @@
 
 
 
-    <form method="post" style="max-width: 50em">
+    <form method="POST" action="{% url 'submit' %}"
+    style="max-width: 50em"
+    >
         {% csrf_token %}
         <div class="mb-5">
             <h5 class="card-title">Simulation parameters</h5>
@@ -85,7 +87,7 @@
         function check_on_background_task(id) {
             console.log('checking on task', id);
             $.ajax(
-                {url: '/get_result/' + id}
+                {url: "/task/" + id}
             ).done(function (data) {
                 if (data.completed) {
                     task_status = {
