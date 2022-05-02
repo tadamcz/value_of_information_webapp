@@ -275,7 +275,17 @@ Q_CLUSTER = {
     'name': 'DjangORM',
     'max_attempts':1,
     'ack_failures': True,
-    'timeout': None,
-    'retry': int(1e9), # 1 billion seconds = 31 years
-    'orm': 'default'
+    'orm': 'default',
+    # Each row is currently about 1mb due to the large size of the args
+    # This could easily be optimized (send a much lighter object as args).
+    # Currently, we need to save unlimited tasks; otherwise, query links would eventually break.
+    'save_limit': 0,
+
+    # Tasks should never time out and never be retried.
+    # But `retry` defaults to 60 and must be bigger
+    # than the time it takes to complete longest task.
+    # Therefore, we use this hack.
+    # 1 billion seconds = 31 years
+    'timeout': int(1e9) - 1,
+    'retry': int(1e9),
 }
