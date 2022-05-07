@@ -53,18 +53,7 @@
             <h5 class="card-title">Cost-benefit analysis (optional)</h5>
             <p>The prior and bar must be expressed in <code>value_units</code> per <code>money_units</code> spent</p>
             {% for field in cost_benefit_form %}
-                {% if field.name == 'force_explicit' %}
-                    <div class="row">
-                        <div class="col">
-                            {{ field|add_label_class:"form-check-label" }}
-                        </div>
-                        <div class="col">
-                            {{ field|add_class:"checkboxinput form-check-input" }}
-                        </div>
-                    </div>
-                {% else %}
-                    {{ field|as_crispy_field }}
-                {% endif %}
+                {{ field|as_crispy_field }}
             {% endfor %}
 
             <div class="mt-3 mb-3 row">
