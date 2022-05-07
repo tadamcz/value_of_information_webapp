@@ -15,6 +15,10 @@ from value_of_information_webapp.utils import utils
 
 
 class Query:
+	"""
+	We need to use a few static methods in here, or the args that are serialized and stored in the db
+	become huge.
+	"""
 	CONVERGENCE_TARGET = 0.05
 
 	def __init__(self, query_dict: QueryDict):
@@ -25,18 +29,19 @@ class Query:
 		self.sim_form = SimulationForm(query_dict)
 		self.cb_form = CostBenefitForm(query_dict)
 
-	def create_executors(self):
-		bar = self.sim_form.cleaned_data['bar']
+	@staticmethod
+	def create_executors(sim_form, cb_form):
+		bar = sim_form.cleaned_data['bar']
 
-		study_sd_of_estimator = self.sim_form.cleaned_data['study_sd_of_estimator']
+		study_sd_of_estimator = sim_form.cleaned_data['study_sd_of_estimator']
 
-		normal_prior_mu = self.sim_form.cleaned_data['normal_prior_ev']
-		normal_prior_sigma = self.sim_form.cleaned_data['normal_prior_sd']
+		normal_prior_mu = sim_form.cleaned_data['normal_prior_ev']
+		normal_prior_sigma = sim_form.cleaned_data['normal_prior_sd']
 
-		lognormal_prior_ev = self.sim_form.cleaned_data['lognormal_prior_ev']
-		lognormal_prior_sd = self.sim_form.cleaned_data['lognormal_prior_sd']
+		lognormal_prior_ev = sim_form.cleaned_data['lognormal_prior_ev']
+		lognormal_prior_sd = sim_form.cleaned_data['lognormal_prior_sd']
 
-		force_explicit = self.sim_form.cleaned_data['force_explicit']
+		force_explicit = sim_form.cleaned_data['force_explicit']
 
 		if normal_prior_mu is not None and normal_prior_sigma is not None:
 			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
@@ -55,35 +60,47 @@ class Query:
 			simulation_inputs, force_explicit=force_explicit
 		)
 
-		if self.cb_form.is_full():
+		if cb_form.is_full():
 			cb_inputs = CostBenefitInputs(
-				**self.cb_form.cleaned_data
+				**cb_form.cleaned_data
 			)
 			cb_executor = CostBenefitsExecutor(inputs=cb_inputs)
 		else:
 			cb_executor = None
 
-		self.cb_executor = cb_executor
-		self.sim_executor = sim_executor
+		return sim_executor, cb_executor
 
 	def send_to_queue(self):
-		self.create_executors()
-
 		task_id = django_q.tasks.async_task(
 			to_buffer,
-			self.execute,
+			Query.q_function,
+			callable_kwargs = {
+				'sim_form': self.sim_form,
+				'cb_form': self.cb_form,
+				'convergence_target': self.CONVERGENCE_TARGET,
+			}
 		)
 
 		return task_id
 
-	def execute(self):
-		sim_run = self.sim_executor.execute(
-			convergence_target=self.CONVERGENCE_TARGET,
-			max_iterations=self.sim_form.cleaned_data['max_iterations']
+	@staticmethod
+	def q_function(sim_form, cb_form, convergence_target):
+		sim_executor, cb_executor = Query.create_executors(sim_form, cb_form)
+
+		Query.execute(sim_executor, cb_executor,
+					  convergence_target=convergence_target,
+					  max_iterations=sim_form.cleaned_data['max_iterations'])
+
+
+	@staticmethod
+	def execute(sim_executor, cb_executor, convergence_target, max_iterations):
+		sim_run = sim_executor.execute(
+			convergence_target=convergence_target,
+			max_iterations=max_iterations
 		)
-		if self.cb_executor is not None:
-			self.cb_executor.sim_run = sim_run
-			self.cb_executor.execute()
+		if cb_executor is not None:
+			cb_executor.sim_run = sim_run
+			cb_executor.execute()
 
 	def is_valid(self):
 		simulation_form_valid = self.sim_form.is_valid()
