@@ -9,7 +9,7 @@ class SimulationForm(forms.Form):
 	normal_prior_sd = forms.FloatField(required=False, label='Normal prior s.d.')
 	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation (not mu!)')
 	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior s.d. (not sigma!)')
-	study_sd_of_estimator = forms.FloatField(label="Study standard error")
+	signal_sd = forms.FloatField(label="Signal standard deviation")
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
@@ -17,7 +17,7 @@ class SimulationForm(forms.Form):
 	normal_prior_sd.math_expr = "sd(T)"
 	lognormal_prior_ev.math_expr = "E[T]"
 	lognormal_prior_sd.math_expr = "sd(T)"
-	study_sd_of_estimator.math_expr = "sd(B)"
+	signal_sd.math_expr = "sd(B)"
 
 	@staticmethod
 	def initial():
@@ -25,7 +25,7 @@ class SimulationForm(forms.Form):
 			'max_iterations': 10_000,
 			'lognormal_prior_ev': 5,
 			'lognormal_prior_sd': 4,
-			'study_sd_of_estimator': 2,
+			'signal_sd': 2,
 			'bar': 7,
 			'force_explicit': False,
 		}
@@ -81,7 +81,7 @@ class CostBenefitForm(forms.Form):
 	money_units = forms.CharField(required=False,
 								  widget=forms.TextInput(attrs={'placeholder': 'For example: "$" or "M$", or "£"'}))
 	capital = forms.FloatField(required=False)
-	study_cost = forms.FloatField(required=False, label='Study cost')
+	signal_cost = forms.FloatField(required=False, label='Cost to acquire signal')
 
 	@staticmethod
 	def initial():
@@ -89,7 +89,7 @@ class CostBenefitForm(forms.Form):
 			'value_units': 'utils',
 			'money_units': 'M$',
 			'capital': 100,
-			'study_cost': 5,
+			'signal_cost': 5,
 		}
 
 	def __init__(self, *args, **kwargs):

@@ -8,7 +8,7 @@ import scipy
 from django.http.request import QueryDict
 
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
-from value_of_information.study_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
+from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
 from value_of_information_webapp.to_buffer import to_buffer
 from value_of_information_webapp.utils import utils
@@ -33,7 +33,7 @@ class Query:
 	def create_executors(sim_form, cb_form):
 		bar = sim_form.cleaned_data['bar']
 
-		study_sd_of_estimator = sim_form.cleaned_data['study_sd_of_estimator']
+		signal_sd = sim_form.cleaned_data['signal_sd']
 
 		normal_prior_mu = sim_form.cleaned_data['normal_prior_ev']
 		normal_prior_sigma = sim_form.cleaned_data['normal_prior_sd']
@@ -53,7 +53,7 @@ class Query:
 
 		simulation_inputs = SimulationInputs(
 			prior=prior,
-			sd_B=study_sd_of_estimator,
+			sd_B=signal_sd,
 			bar=bar)
 
 		sim_executor = SimulationExecutor(

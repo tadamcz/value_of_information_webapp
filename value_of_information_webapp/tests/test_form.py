@@ -8,7 +8,7 @@ def lognormal_data():
 		'max_iterations': 10_000,
 		'lognormal_prior_ev': 5,
 		'lognormal_prior_sd': 4,
-		'study_sd_of_estimator': 2,
+		'signal_sd': 2,
 		'bar': 7,
 	}
 
@@ -19,7 +19,7 @@ def normal_data():
 		'max_iterations': 10_000,
 		'normal_prior_ev': 5,
 		'normal_prior_sd': 4,
-		'study_sd_of_estimator': 2,
+		'signal_sd': 2,
 		'bar': 7,
 	}
 
