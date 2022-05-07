@@ -13,6 +13,12 @@ class SimulationForm(forms.Form):
 	bar = forms.FloatField()
 	force_explicit = forms.BooleanField(required=False)
 
+	normal_prior_ev.math_expr = "E[T]"
+	normal_prior_sd.math_expr = "sd(T)"
+	lognormal_prior_ev.math_expr = "E[T]"
+	lognormal_prior_sd.math_expr = "sd(T)"
+	study_sd_of_estimator.math_expr = "sd(B)"
+
 	@staticmethod
 	def initial():
 		return {
