@@ -7,17 +7,26 @@ class SimulationForm(forms.Form):
 	max_iterations = forms.IntegerField(required=False)
 	normal_prior_ev = forms.FloatField(required=False, label='Normal prior expectation')
 	normal_prior_sd = forms.FloatField(required=False, label='Normal prior s.d.')
-	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation (not mu!)')
-	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior s.d. (not sigma!)')
+	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation')
+	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior s.d.')
 	signal_sd = forms.FloatField(label="Signal standard deviation")
 	bar = forms.FloatField()
-	force_explicit = forms.BooleanField(required=False)
+	force_explicit = forms.BooleanField(required=False, label_suffix="")
 
 	normal_prior_ev.math_expr = "E[T]"
 	normal_prior_sd.math_expr = "sd(T)"
 	lognormal_prior_ev.math_expr = "E[T]"
 	lognormal_prior_sd.math_expr = "sd(T)"
 	signal_sd.math_expr = "sd(B)"
+
+	signal_sd.explainer_text = "For example, if the signal is a regression coefficient from a sample, this is the standard " \
+							 "deviation of the estimator for that coefficient. This is often called the standard error of " \
+							 "the coefficient."
+
+	lognormal_prior_ev.explainer_text = "Be careful, this is not the mu parameter. mu is the expected value of T's " \
+										"logarithm "
+	lognormal_prior_sd.explainer_text = "Be careful, this is not the sigma parameter. sigma is the standard deviation " \
+										"of T's logarithm "
 
 	@staticmethod
 	def initial():

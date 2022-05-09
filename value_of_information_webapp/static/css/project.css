@@ -14,11 +14,11 @@
     white-space: pre-line;
 }
 
-#explainerAccordion code {
+#explainer_accordion code {
     white-space: normal;
 }
 
-form, #explainerAccordion {
+form, #explainer_accordion {
     max-width: 50em;
 }
 
@@ -29,4 +29,15 @@ code {
     box-decoration-break: clone;
     padding: .1rem .3rem .2rem;
     border-radius: .2rem;
+}
+/* Override bootstrap defaults for .accordion-button */
+form .accordion-button {
+    padding: 0;
+}
+
+/* Override bootstrap defaults for .accordion-button */
+form .accordion-button:not(.collapsed) {
+    color: inherit;
+    background-color: inherit;
+    box-shadow: inherit;
 }
