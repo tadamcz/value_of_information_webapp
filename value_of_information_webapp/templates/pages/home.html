@@ -21,7 +21,8 @@
         <div class="card mb-2" id="resultContainer" style="visibility: hidden">
             <div class="card-header">Results</div>
             <div class="card-body">
-                <pre id="result"></pre>
+                <h5>Expected benefit from signal: <span id="signal_benefit_number">None</span></h5>
+                <pre id="console_output"></pre>
                 <p><a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.</p>
             </div>
         </div>
@@ -110,10 +111,12 @@
             ).done(function (data) {
                 if (data.completed) {
                     task_status = {
-                        'completed': data.done, 'success': data.success,
+                        'completed': data.done,
+                        'success': data.success,
                         'time_taken': data.time_taken
                     }
-                    $("#result").text(data.console_output)
+                    $("#console_output").text(data.console_output)
+                    $("#signal_benefit_number").text(data.return_value.mean_signal_benefit.toPrecision(5))
                     $("#resultContainer").css('visibility', 'visible')
                     if (data.success) {
                         $("#statusContainer").addClass('border-success')
@@ -126,7 +129,8 @@
                     const submitted_string = `${query_created_at.toLocaleTimeString()} (${formatDate(query_created_at)})`
                     const checked_string = `${checked_at.toLocaleTimeString()}`
                     task_status = {
-                        'completed': data.completed, 'queue_size': data.queue_size,
+                        'completed': data.completed,
+                        'queue_size': data.queue_size,
                         'last_checked': checked_string,
                         'submitted': submitted_string
                     }

@@ -6,9 +6,9 @@ import django_q
 import numpy as np
 import scipy
 from django.http.request import QueryDict
-
 from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
+
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
 from value_of_information_webapp.models import CSVData, PersistedQuery
 from value_of_information_webapp.to_buffer import to_buffer
@@ -92,10 +92,10 @@ class Query:
 		"""
 		sim_executor, cb_executor = Query.create_executors(sim_form, cb_form)
 
-		Query.execute(sim_executor, cb_executor,
-					  convergence_target=convergence_target,
-					  max_iterations=sim_form.cleaned_data['max_iterations'],
-					  persisted_query_id=persisted_query_id)
+		return Query.execute(sim_executor, cb_executor,
+							 convergence_target=convergence_target,
+							 max_iterations=sim_form.cleaned_data['max_iterations'],
+							 persisted_query_id=persisted_query_id)
 
 	@staticmethod
 	def execute(sim_executor, cb_executor, convergence_target, max_iterations, persisted_query_id):
@@ -110,6 +110,8 @@ class Query:
 		persisted_query = PersistedQuery.objects.get(pk=persisted_query_id)
 
 		CSVData(query=persisted_query, string=sim_run.csv()).save()
+
+		return {"mean_signal_benefit": sim_run.mean_benefit_signal()}
 
 	def is_valid(self):
 		simulation_form_valid = self.sim_form.is_valid()

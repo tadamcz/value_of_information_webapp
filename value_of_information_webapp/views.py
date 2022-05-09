@@ -83,9 +83,14 @@ def task(request, id):
 		q_size = django_q.tasks.queue_size()
 		return JsonResponse({'completed': False, 'queue_size': q_size, 'task_checked': time.time()})
 	else:
-		return JsonResponse(
-			{'completed': True, 'console_output': task.result, 'success': task.success,
-			 'time_taken': task.time_taken()})
+
+		return JsonResponse({
+			'completed': True,
+			'console_output': task.result["text_buffer"],
+			'return_value': task.result["return_value"],
+			'success': task.success,
+			'time_taken': task.time_taken()
+		})
 
 
 def csv(request, task_id):
