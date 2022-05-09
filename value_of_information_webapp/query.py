@@ -7,8 +7,8 @@ import numpy as np
 import scipy
 from django.http.request import QueryDict
 
-from value_of_information.simulation import SimulationInputs, SimulationExecutor
 from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
+from value_of_information.simulation import SimulationInputs, SimulationExecutor
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
 from value_of_information_webapp.models import CSVData, PersistedQuery
 from value_of_information_webapp.to_buffer import to_buffer
@@ -75,11 +75,11 @@ class Query:
 		task_id = django_q.tasks.async_task(
 			to_buffer,
 			Query.q_function,
-			callable_kwargs = {
+			callable_kwargs={
 				'sim_form': self.sim_form,
 				'cb_form': self.cb_form,
 				'convergence_target': self.CONVERGENCE_TARGET,
-				'persisted_query_id':persisted_query_id
+				'persisted_query_id': persisted_query_id
 			}
 		)
 
@@ -96,7 +96,6 @@ class Query:
 					  convergence_target=convergence_target,
 					  max_iterations=sim_form.cleaned_data['max_iterations'],
 					  persisted_query_id=persisted_query_id)
-
 
 	@staticmethod
 	def execute(sim_executor, cb_executor, convergence_target, max_iterations, persisted_query_id):

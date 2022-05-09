@@ -20,8 +20,8 @@ class SimulationForm(forms.Form):
 	signal_sd.math_expr = "sd(B)"
 
 	signal_sd.explainer_text = "For example, if the signal is a regression coefficient from a sample, this is the standard " \
-							 "deviation of the estimator for that coefficient. This is often called the standard error of " \
-							 "the coefficient."
+							   "deviation of the estimator for that coefficient. This is often called the standard error of " \
+							   "the coefficient."
 
 	lognormal_prior_ev.explainer_text = "Be careful, this is not the `mu` parameter. `mu` is the expected value of `T`'s " \
 										"logarithm "

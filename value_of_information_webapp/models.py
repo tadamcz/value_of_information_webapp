@@ -20,6 +20,7 @@ class PersistedQuery(models.Model):
 			models.Index(fields=['equivalence_class_id'])
 		]
 
+
 class CSVData(models.Model):
 	query = models.OneToOneField(PersistedQuery, on_delete=models.CASCADE)
 	string = models.TextField()

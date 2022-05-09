@@ -4,24 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	initial = True
 
-    initial = True
+	dependencies = [
+	]
 
-    dependencies = [
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='PersistedQuery',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('q_task_id', models.UUIDField()),
-                ('raw_form_data_json', models.CharField(max_length=2000)),
-                ('equivalence_class_id', models.CharField(max_length=32)),
-            ],
-        ),
-        migrations.AddIndex(
-            model_name='persistedquery',
-            index=models.Index(fields=['equivalence_class_id'], name='value_of_in_equival_5cc052_idx'),
-        ),
-    ]
+	operations = [
+		migrations.CreateModel(
+			name='PersistedQuery',
+			fields=[
+				('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+				('q_task_id', models.UUIDField()),
+				('raw_form_data_json', models.CharField(max_length=2000)),
+				('equivalence_class_id', models.CharField(max_length=32)),
+			],
+		),
+		migrations.AddIndex(
+			model_name='persistedquery',
+			index=models.Index(fields=['equivalence_class_id'], name='value_of_in_equival_5cc052_idx'),
+		),
+	]

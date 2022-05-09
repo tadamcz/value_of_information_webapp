@@ -50,13 +50,15 @@
                         <div class="col-5">
                             <div class="col-form-label">
                                 {% if field.field.explainer_text %}
-                                    <div class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordion_collapse_{{ field.auto_id }}">
+                                    <div class="accordion-button collapsed" data-bs-toggle="collapse"
+                                         data-bs-target="#accordion_collapse_{{ field.auto_id }}">
                                         {{ field.label }}
                                     </div>
                                 {% else %}
                                     {{ field.label }}
                                 {% endif %}
-                                <div id="accordion_collapse_{{ field.auto_id }}" class="accordion-collapse collapse card-body">
+                                <div id="accordion_collapse_{{ field.auto_id }}"
+                                     class="accordion-collapse collapse card-body">
                                     {{ field.field.explainer_text|markdownify }}
                                 </div>
                             </div>

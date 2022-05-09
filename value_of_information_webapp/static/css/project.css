@@ -1,13 +1,13 @@
 .alert-debug {
-  color: black;
-  background-color: white;
-  border-color: #d6e9c6;
+    color: black;
+    background-color: white;
+    border-color: #d6e9c6;
 }
 
 .alert-error {
-  color: #b94a48;
-  background-color: #f2dede;
-  border-color: #eed3d7;
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #eed3d7;
 }
 
 #resultContainer code, #statusContainer code {
@@ -30,6 +30,7 @@ code {
     padding: .1rem .3rem .2rem;
     border-radius: .2rem;
 }
+
 /* Override bootstrap defaults for .accordion-button */
 form .accordion-button {
     padding: 0;

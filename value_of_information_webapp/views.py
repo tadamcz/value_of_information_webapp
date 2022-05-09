@@ -3,9 +3,9 @@ import os
 import time
 
 import django_q
+import markdown
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
-import markdown
 
 from value_of_information_webapp.forms import SimulationForm, CostBenefitForm
 from value_of_information_webapp.models import PersistedQuery
@@ -20,6 +20,7 @@ markdown.markdownFromFile(
 	output='value_of_information_webapp/templates/components/explainer_text.html',
 	encoding='utf8',
 )
+
 
 def home(request):
 	return render(request, 'pages/home.html', context={
@@ -43,7 +44,6 @@ def submit(request):
 			persisted_query = PersistedQuery.objects.filter(equivalence_class_id=query_id).first()
 			if persisted_query:
 				return redirect(persisted_query)
-
 
 		raw_form_data = dict(request.POST.items())
 		raw_form_data.pop("csrfmiddlewaretoken", None)
