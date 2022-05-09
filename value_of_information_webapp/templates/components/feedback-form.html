@@ -1,0 +1,51 @@
+<div class="card mt-3 mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Give feedback</h5>
+        <form id="feedback-form" action="https://formspree.io/f/mrgjrbjb" method="POST">
+            <input class="form-control mb-3" type="email" name="email" placeholder="email (optional) so I can reply"/>
+            <textarea required class="form-control mb-3" name="message" placeholder="Feedback"></textarea>
+            <button id="feedback-form-button" class="btn btn-secondary col">Submit</button>
+            <span class="mx-1" id="feedback-form-status"></span>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    var form = document.getElementById("feedback-form");
+
+    const error_message = "There was a problem submitting your form. Try email instead: tadamczewskipublic@gmail.com"
+
+    async function handleSubmit(event) {
+
+
+        event.preventDefault();
+        var status = document.getElementById("feedback-form-status");
+        status.innerHTML = "Sending...";
+        var data = new FormData(event.target);
+        fetch(event.target.action, {
+            method: form.method,
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                status.innerHTML = "Thanks for your feedback!";
+                form.reset()
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        status.innerHTML = data["errors"].map(error => error["message"]).join(", ")
+                    } else {
+                        status.innerHTML = error_message
+                    }
+                })
+            }
+        }).catch(error => {
+            status.innerHTML = error_message
+        });
+    }
+
+    form.addEventListener("submit", handleSubmit)
+</script>
