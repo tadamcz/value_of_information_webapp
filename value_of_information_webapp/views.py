@@ -3,7 +3,7 @@ import os
 import time
 
 import django_q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 import markdown
 
@@ -44,16 +44,18 @@ def submit(request):
 			if persisted_query:
 				return redirect(persisted_query)
 
-		q_task_id = query.send_to_queue()
 
 		raw_form_data = dict(request.POST.items())
 		raw_form_data.pop("csrfmiddlewaretoken", None)
 
 		persisted_query = PersistedQuery(
 			equivalence_class_id=query_id,
-			q_task_id=q_task_id,
 			raw_form_data_json=json.dumps(raw_form_data)
 		)
+
+		persisted_query.save()
+		q_task_id = query.send_to_queue(persisted_query_id=persisted_query.pk)
+		persisted_query.q_task_id = q_task_id
 		persisted_query.save()
 
 		return redirect(persisted_query)
@@ -84,3 +86,10 @@ def task(request, id):
 		return JsonResponse(
 			{'completed': True, 'console_output': task.result, 'success': task.success,
 			 'time_taken': task.time_taken()})
+
+
+def csv(request, task_id):
+	p_query = PersistedQuery.objects.get(q_task_id=task_id)
+	response = HttpResponse(p_query.csvdata.string, content_type="text/csv")
+	response["Content-Disposition"] = f"attachment;filename=query_{p_query.pk}.csv"
+	return response

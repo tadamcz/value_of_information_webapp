@@ -20,7 +20,10 @@
 
         <div class="card mb-2" id="resultContainer" style="visibility: hidden">
             <div class="card-header">Results</div>
-            <pre class="card-body" id="result"></pre>
+            <div class="card-body">
+                <pre id="result"></pre>
+                <p><a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.</p>
+            </div>
         </div>
     {% endif %}
 

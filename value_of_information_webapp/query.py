@@ -10,6 +10,7 @@ from django.http.request import QueryDict
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
 from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
+from value_of_information_webapp.models import CSVData, PersistedQuery
 from value_of_information_webapp.to_buffer import to_buffer
 from value_of_information_webapp.utils import utils
 
@@ -70,7 +71,7 @@ class Query:
 
 		return sim_executor, cb_executor
 
-	def send_to_queue(self):
+	def send_to_queue(self, persisted_query_id):
 		task_id = django_q.tasks.async_task(
 			to_buffer,
 			Query.q_function,
@@ -78,22 +79,27 @@ class Query:
 				'sim_form': self.sim_form,
 				'cb_form': self.cb_form,
 				'convergence_target': self.CONVERGENCE_TARGET,
+				'persisted_query_id':persisted_query_id
 			}
 		)
 
 		return task_id
 
 	@staticmethod
-	def q_function(sim_form, cb_form, convergence_target):
+	def q_function(sim_form, cb_form, convergence_target, persisted_query_id):
+		"""
+		We try to keep the args to this as light as possible
+		"""
 		sim_executor, cb_executor = Query.create_executors(sim_form, cb_form)
 
 		Query.execute(sim_executor, cb_executor,
 					  convergence_target=convergence_target,
-					  max_iterations=sim_form.cleaned_data['max_iterations'])
+					  max_iterations=sim_form.cleaned_data['max_iterations'],
+					  persisted_query_id=persisted_query_id)
 
 
 	@staticmethod
-	def execute(sim_executor, cb_executor, convergence_target, max_iterations):
+	def execute(sim_executor, cb_executor, convergence_target, max_iterations, persisted_query_id):
 		sim_run = sim_executor.execute(
 			convergence_target=convergence_target,
 			max_iterations=max_iterations
@@ -101,6 +107,10 @@ class Query:
 		if cb_executor is not None:
 			cb_executor.sim_run = sim_run
 			cb_executor.execute()
+
+		persisted_query = PersistedQuery.objects.get(pk=persisted_query_id)
+
+		CSVData(query=persisted_query, string=sim_run.csv()).save()
 
 	def is_valid(self):
 		simulation_form_valid = self.sim_form.is_valid()

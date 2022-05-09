@@ -6,4 +6,5 @@ urlpatterns = [
     path('task/<id>', views.task, name='task'),
     path('query/<id>', views.query, name='query'),
     path('submit', views.submit, name='submit'),
+    path('csv/<task_id>', views.csv, name='csv'),
 ]
