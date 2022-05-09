@@ -19,25 +19,28 @@ When the signal does change our decision, the size of the benefit depends on the
 
 We can find the expected value of information by taking an appropriate expectation over states of the world of the expression above.
 
-### Additional details
-This tool uses a simulation to approximate the expectation mentioned above.
+### Model details
+We make some simplifying assumptions:
 
-Specifically, for each iteration `i` of the simulation:
+* We model the decision problem as a binary choice between an option whose value is known with certainty (the "bar"), and an uncertain option whose value is `T`.
+* The decision-maker is taken to be risk-neutral (and the expected VOI is computed from a risk-neutral stance as well).
+* The problem is one-dimensional, i.e. `T` and `B` follow one-dimensional distributions.
+* Currently, only one distribution family is supported for `B`: `B` has a normal distribution with unknown mean `T` and known standard deviation.
+* On this website, the prior over `T` must be normal or log-normal. The underlying Python package supports any prior specified as a one-dimensional SciPy continuous distribution.
 
-1. we draw a true value `T_i` from the prior `P(T)`.
-2. we draw an estimate `b_i` from `Normal(T_i,sd(B))`.
-3. the decision-maker's subjective posterior expected value is `E[T|b_i]`. If `E[T|b_i]>bar`, they choose the uncertain option and get a payoff of `T_i`, and otherwise they choose the certain option and get `bar`.
+This tool uses a simulation to approximate the expectation mentioned in the previous section. Specifically, for each iteration `i` of the simulation:
 
-In this implementation, we take that expectation according to the decision maker's prior over `T` (we can write `P(T)`). In a subjective bayesian sense, this means that we compute the expected VOI by the lights of the decision-maker; a frequentist interpretation might be that the decision situation is drawn from a larger reference class in which `T` follows `P(T)`, and we are computing the average VOI in that class.
+1. We draw a true value `T_i` from the decision-maker's prior `P(T)`.
+2. We draw an estimate `b_i` from `Normal(T_i,sd(B))`.
+3. We can then calculate the decision that would be made with and without access to the signal:
+   1. _With the signal._ The decision-maker's subjective posterior expected value is `E[T|b_i]`. If `E[T|b_i]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
+   2. _Without the signal._ If `E[T]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
+4. We calculate the decision-maker's payoffs with and without access to the signal. If choosing the uncertain option, they get a payoff of `T_i`; the payoff for the certain option is `bar`.
+
+In this implementation, we take that expectation according to the decision maker's prior `P(T)` (this is because `T_i`s are drawn from `P(T)` in step 1). In a subjective bayesian sense, this means that we compute the expected VOI by the lights of the decision-maker; a frequentist interpretation might be that the decision situation is drawn from a larger reference class in which `T` follows `P(T)`, and we are computing the average VOI in that class.
 
 These concepts need not coincide in general. We could without difficulty model the decision-maker as acting according to `P(T)`, but nonetheless compute the value of information by the lights of another actor who believes `Q(T)` (or the VOI in a reference class following `Q(T)`).
 
-Limitations of this tool:
-
-* This tool only supports the one-dimensional version of the problem, i.e. `T` and `B` follow one-dimensional distributions.
-* Currently, only one distribution family is supported for `B`: `B` has a normal distribution with unknown mean `T` and known standard deviation.
-* In this web application, the prior over `T` must be normal or log-normal. (The underlying Python package supports any prior specified as a SciPy continuous distribution).
-* The decision problem is binary, between an option whose value is known with certainty (the "bar"), and the uncertain option represented by `T`. The decision-maker is risk-neutral, chooses the uncertain option if the posterior expected value after receiving the signal is greater than the bar.
 
 ### Computational approach
 [Andrews et al. 1972]({% static 'pdf/andrews1972.pdf' %}) (Lemma 1)  showed that for normally distributed `B` with mean `T` and any prior distribution over `T`, `E[T|B=b]` is increasing in `b`. Therefore, by default, we run a numerical equation solver to find the threshold value `B=b_t`, such that `E[T|b]>bar` if and only if `b>b_t`.
