@@ -10,6 +10,23 @@
   border-color: #eed3d7;
 }
 
+#resultContainer code, #statusContainer code {
+    white-space: pre-line;
+}
+
+#explainerAccordion code {
+    white-space: normal;
+}
+
+form, #explainerAccordion {
+    max-width: 50em;
+}
+
 code {
-  white-space: pre-line;
+    color: black;
+    background: #f2f1f1;
+    word-wrap: break-word;
+    box-decoration-break: clone;
+    padding: .1rem .3rem .2rem;
+    border-radius: .2rem;
 }
