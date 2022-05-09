@@ -33,9 +33,9 @@ This tool uses a simulation to approximate the expectation mentioned in the prev
 1. We draw a true value `T_i` from the decision-maker's prior `P(T)`.
 2. We draw an estimate `b_i` from `Normal(T_i,sd(B))`.
 3. We can then calculate the decision that would be made with and without access to the signal:
-   1. _With the signal._ The decision-maker's subjective posterior expected value is `E[T|b_i]`. If `E[T|b_i]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
-   2. _Without the signal._ If `E[T]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
-4. We calculate the decision-maker's payoffs with and without access to the signal. If choosing the uncertain option, they get a payoff of `T_i`; the payoff for the certain option is `bar`.
+    * _With the signal._ The decision-maker's subjective posterior expected value is `E[T|b_i]`. If `E[T|b_i]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
+    * _Without the signal._ If `E[T]>bar`, the decision-maker chooses the uncertain option, otherwise they choose the certain option.
+5. We calculate the decision-maker's payoffs with and without access to the signal. If choosing the uncertain option, they get a payoff of `T_i`; the payoff for the certain option is `bar`.
 
 In this implementation, we take that expectation according to the decision maker's prior `P(T)` (this is because `T_i`s are drawn from `P(T)` in step 1). In a subjective bayesian sense, this means that we compute the expected VOI by the lights of the decision-maker; a frequentist interpretation might be that the decision situation is drawn from a larger reference class in which `T` follows `P(T)`, and we are computing the average VOI in that class.
 
