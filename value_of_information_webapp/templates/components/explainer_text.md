@@ -42,4 +42,4 @@ Limitations of this tool:
 ### Computational approach
 [Andrews et al. 1972]({% static 'pdf/andrews1972.pdf' %}) (Lemma 1)  showed that for normally distributed `B` with mean `T` and any prior distribution over `T`, `E[T|B=b]` is increasing in `b`. Therefore, by default, we run a numerical equation solver to find the threshold value `B=b_t`, such that `E[T|b]>bar` if and only if `b>b_t`.
 
-When `force_explicit` is selected, we don't run the numerical equation solver, but instead explicitly compute the posterior probability distribution `E[T|b_i]` in each iteration.
+When `force_explicit` is selected, we don't run the numerical equation solver, but instead explicitly compute the posterior probability distribution `P[T|b_i]` in each iteration.
