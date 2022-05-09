@@ -277,8 +277,6 @@ Q_CLUSTER = {
     'max_attempts':1,
     'ack_failures': True,
     'orm': 'default',
-    # Each row is currently about 1mb due to the large size of the args
-    # This could easily be optimized (send a much lighter object as args).
     # Currently, we need to save unlimited tasks; otherwise, query links would eventually break.
     'save_limit': 0,
 
