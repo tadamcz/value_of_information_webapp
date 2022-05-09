@@ -27,6 +27,7 @@ value-of-information = { path = "./value-of-information/", develop=true}
 psycopg2 = "^2.9.3"
 django-widget-tweaks = "^1.4.12"
 Markdown = "^3.3.7"
+django-markdownify = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
 Werkzeug = {version = "2.0.", extras = ["watchdog"]}

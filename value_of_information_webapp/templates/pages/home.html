@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 {% load tz %}
+{% load markdownify %}
 
 {% block content %}
 
@@ -53,7 +54,7 @@
                                     {{ field.label }}
                                 {% endif %}
                                 <div id="accordion_collapse_{{ field.auto_id }}" class="accordion-collapse collapse card-body">
-                                    {{ field.field.explainer_text }}
+                                    {{ field.field.explainer_text|markdownify }}
                                 </div>
                             </div>
                         </div>

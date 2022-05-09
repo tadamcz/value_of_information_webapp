@@ -23,10 +23,10 @@ class SimulationForm(forms.Form):
 							 "deviation of the estimator for that coefficient. This is often called the standard error of " \
 							 "the coefficient."
 
-	lognormal_prior_ev.explainer_text = "Be careful, this is not the mu parameter. mu is the expected value of T's " \
+	lognormal_prior_ev.explainer_text = "Be careful, this is not the `mu` parameter. `mu` is the expected value of `T`'s " \
 										"logarithm "
-	lognormal_prior_sd.explainer_text = "Be careful, this is not the sigma parameter. sigma is the standard deviation " \
-										"of T's logarithm "
+	lognormal_prior_sd.explainer_text = "Be careful, this is not the `sigma` parameter. `sigma` is the standard deviation " \
+										"of `T`'s logarithm "
 
 	@staticmethod
 	def initial():

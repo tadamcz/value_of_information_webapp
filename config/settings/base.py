@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "django_q",
     "widget_tweaks",
+    'markdownify.apps.MarkdownifyConfig',
 ]
 
 LOCAL_APPS = [
@@ -288,4 +289,10 @@ Q_CLUSTER = {
     # 1 billion seconds = 31 years
     'timeout': int(1e9) - 1,
     'retry': int(1e9),
+}
+
+MARKDOWNIFY = {
+  "default": {
+     "WHITELIST_TAGS": ["a", "p", "h1", "code"]
+  },
 }
