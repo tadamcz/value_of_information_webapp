@@ -27,3 +27,9 @@ function formatDate(date) {
         return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
     }
 }
+
+$("#explainer_accordion").on("show.bs.collapse", function () {
+    $('html, body').animate({
+        scrollTop: ($('#explainer_accordion').offset().top - 10)
+    }, 200);
+})
