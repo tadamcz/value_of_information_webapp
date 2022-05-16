@@ -55,13 +55,18 @@
                                          data-bs-target="#accordion_collapse_{{ field.auto_id }}">
                                         {{ field.label }}
                                     </div>
+
+                                    <div class="accordion-collapse collapse"
+                                         id="accordion_collapse_{{ field.auto_id }}">
+                                        <div class="card-body">
+                                            {{ field.field.explainer_text|markdownify }}
+                                        </div>
+                                    </div>
+
                                 {% else %}
                                     {{ field.label }}
                                 {% endif %}
-                                <div id="accordion_collapse_{{ field.auto_id }}"
-                                     class="accordion-collapse collapse card-body">
-                                    {{ field.field.explainer_text|markdownify }}
-                                </div>
+
                             </div>
                         </div>
                         <div class="col-2">
