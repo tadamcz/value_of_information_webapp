@@ -18,7 +18,7 @@
     white-space: normal;
 }
 
-form, #explainer_accordion {
+.readable_width {
     max-width: 50em;
 }
 

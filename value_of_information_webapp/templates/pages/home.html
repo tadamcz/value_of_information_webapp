@@ -30,7 +30,7 @@
 
 
 
-    <form method="POST" action="{% url 'submit' %}">
+    <form method="POST" action="{% url 'submit' %}" class="readable_width">
         {% csrf_token %}
         <div class="mb-5">
             <h5 class="card-title">Simulation parameters</h5>
