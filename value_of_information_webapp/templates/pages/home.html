@@ -68,7 +68,11 @@
                             <pre class="col-form-label">{{ field.field.math_expr }}</pre>
                         </div>
                         <div class="col-5">
-                            {{ field|add_class:"form-control" }}
+                            {% if field.name == "prior_family" %}
+                                {{ field|add_class:"form-select" }}
+                            {% else %}
+                                {{ field|add_class:"form-control" }}
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}

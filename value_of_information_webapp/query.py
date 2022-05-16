@@ -33,24 +33,22 @@ class Query:
 	@staticmethod
 	def create_executors(sim_form, cb_form):
 		bar = sim_form.cleaned_data['bar']
-
 		signal_sd = sim_form.cleaned_data['signal_sd']
-
-		normal_prior_mu = sim_form.cleaned_data['normal_prior_ev']
-		normal_prior_sigma = sim_form.cleaned_data['normal_prior_sd']
-
-		lognormal_prior_ev = sim_form.cleaned_data['lognormal_prior_ev']
-		lognormal_prior_sd = sim_form.cleaned_data['lognormal_prior_sd']
-
+		prior_family = sim_form.cleaned_data["prior_family"]
 		force_explicit = sim_form.cleaned_data['force_explicit']
 
-		if normal_prior_mu is not None and normal_prior_sigma is not None:
-			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
-		elif lognormal_prior_ev is not None and lognormal_prior_sd is not None:
-			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=lognormal_prior_ev, sd=lognormal_prior_sd)
+		if prior_family == "normal":
+			prior_mu = sim_form.cleaned_data['normal_prior_ev']
+			prior_sigma = sim_form.cleaned_data['normal_prior_sd']
+
+			prior = scipy.stats.norm(prior_mu, prior_sigma)
+
+		if prior_family == "lognormal":
+			prior_ev = sim_form.cleaned_data['lognormal_prior_ev']
+			prior_sd = sim_form.cleaned_data['lognormal_prior_sd']
+
+			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
 			prior = scipy.stats.lognorm(scale=np.exp(lnorm_prior_mu), s=lnorm_prior_sigma)
-		else:
-			raise Exception
 
 		simulation_inputs = SimulationInputs(
 			prior=prior,

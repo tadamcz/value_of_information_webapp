@@ -33,3 +33,25 @@ $("#explainer_accordion").on("show.bs.collapse", function () {
         scrollTop: ($('#explainer_accordion').offset().top - 10)
     }, 200);
 })
+
+const prior_family_selector = $('select[name=prior_family]')
+
+prior_family_selector.change(function () {
+    const family = this.value;
+
+    const normal_rows = $("[name=normal_prior_sd], [name=normal_prior_ev]").closest(".row");
+    const lognormal_rows = $("[name=lognormal_prior_sd], [name=lognormal_prior_ev]").closest(".row");
+
+    normal_rows.hide()
+    lognormal_rows.hide()
+
+    if (family === "lognormal") {
+        lognormal_rows.show()
+    }
+    if (family === "normal") {
+        normal_rows.show()
+    }
+
+});
+
+prior_family_selector.trigger("change")

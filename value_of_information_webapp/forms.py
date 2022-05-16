@@ -5,6 +5,8 @@ from django import forms
 
 class SimulationForm(forms.Form):
 	max_iterations = forms.IntegerField(required=False)
+
+	prior_family = forms.ChoiceField(choices=[('normal', 'Normal'), ('lognormal', 'Lognormal')])
 	normal_prior_ev = forms.FloatField(required=False, label='Normal prior expectation')
 	normal_prior_sd = forms.FloatField(required=False, label='Normal prior s.d.')
 	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation')
@@ -32,6 +34,7 @@ class SimulationForm(forms.Form):
 	def initial():
 		return {
 			'max_iterations': 10_000,
+			'prior_family':'lognormal',
 			'lognormal_prior_ev': 5,
 			'lognormal_prior_sd': 4,
 			'signal_sd': 2,
@@ -54,6 +57,8 @@ class SimulationForm(forms.Form):
 		if not super(SimulationForm, self).is_valid():
 			is_valid = False
 
+		prior_family = self.cleaned_data['prior_family']
+
 		normal_prior_mu = self.cleaned_data['normal_prior_ev']
 		normal_prior_sigma = self.cleaned_data['normal_prior_sd']
 		lognormal_prior_ev = self.cleaned_data['lognormal_prior_ev']
@@ -61,15 +66,15 @@ class SimulationForm(forms.Form):
 		force_explicit = self.cleaned_data['force_explicit']
 		max_iterations = self.cleaned_data['max_iterations']
 
-		normal = normal_prior_mu is not None and normal_prior_sigma is not None
-		lognormal = lognormal_prior_ev is not None and lognormal_prior_sd is not None
+		normal_params_given = normal_prior_mu is not None and normal_prior_sigma is not None
+		lognormal_params_given = lognormal_prior_ev is not None and lognormal_prior_sd is not None
 
-		if normal and lognormal:
-			self.add_error(None, "Cannot provide normal and lognormal")
+		if prior_family == "normal" and not normal_params_given:
+			self.add_error(None, "Must provide parameters for the normal prior.")
 			is_valid = False
 
-		if not normal and not lognormal:
-			self.add_error(None, "Must provide one of normal or lognormal")
+		if prior_family == "lognormal" and not lognormal_params_given:
+			self.add_error(None, "Must provide parameters for the lognormal prior.")
 			is_valid = False
 
 		if max_iterations is not None:

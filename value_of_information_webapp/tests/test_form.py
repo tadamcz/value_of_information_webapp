@@ -6,6 +6,7 @@ import pytest
 def lognormal_data():
 	return {
 		'max_iterations': 10_000,
+		'prior_family': 'lognormal',
 		'lognormal_prior_ev': 5,
 		'lognormal_prior_sd': 4,
 		'signal_sd': 2,
@@ -17,6 +18,7 @@ def lognormal_data():
 def normal_data():
 	return {
 		'max_iterations': 10_000,
+		'prior_family': 'normal',
 		'normal_prior_ev': 5,
 		'normal_prior_sd': 4,
 		'signal_sd': 2,
