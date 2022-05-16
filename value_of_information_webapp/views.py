@@ -5,7 +5,7 @@ import time
 import django_q
 import markdown
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from value_of_information_webapp.forms import SimulationForm, CostBenefitForm
 from value_of_information_webapp.models import PersistedQuery
@@ -62,7 +62,7 @@ def submit(request):
 
 
 def query(request, id):
-	persisted_query = PersistedQuery.objects.get(id=id)
+	persisted_query = get_object_or_404(PersistedQuery, pk=id)
 	no_op = lambda x: x
 	forms_dict = json.loads(persisted_query.raw_form_data_json, parse_float=no_op, parse_int=no_op)
 	sim_form = SimulationForm(forms_dict)
