@@ -6,8 +6,10 @@
 
 {% block content %}
 
-    <p class="mt-3">
-        Calculate the expected value of receiving a signal.
+    <p class="mt-3 readable_width">
+        Calculate the expected value of receiving a signal. This website provides a limited interface for
+        <a href="https://github.com/tadamcz/value-of-information">this</a> Python package. For more flexibility,
+        use the package directly.
     </p>
 
     {% if task_id %}
@@ -106,6 +108,8 @@
     {% include "components/explainer.html" %}
 
     {% include "components/feedback-form.html" %}
+
+    {% include "components/footer.html" %}
 
     <script>
         let wait_ms = 100
