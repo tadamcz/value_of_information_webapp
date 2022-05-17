@@ -71,4 +71,4 @@ mean `T` and any prior distribution over `T`, `E[T|B=b]` is increasing in `b`. T
 equation solver to find the threshold value `B=b_t`, such that `E[T|b]>bar` if and only if `b>b_t`.
 
 When `force_explicit` is selected, we don't run the numerical equation solver, but instead explicitly compute the
-posterior probability distribution `P[T|b_i]` in each iteration.
+posterior probability distribution `P(T|b_i)` in each iteration.
