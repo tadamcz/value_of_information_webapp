@@ -35,3 +35,6 @@ poetry run python manage.py qcluster
 poetry run python manage.py runserver
 ```
 
+
+# Funding
+This tool was developed under contract for [Open Philanthropy](https://www.openphilanthropy.org/). Open Philanthropy plans to use this tool as one input into the decision of whether to fund randomized trials in global health or development. Because the concept is quite general, we hope that the tool can also be useful to others.
