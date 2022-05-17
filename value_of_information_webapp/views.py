@@ -1,96 +1,100 @@
-import hashlib
+import json
 import os
-import subprocess
 import time
 
 import django_q
-import numpy as np
-import scipy
-from django.http import JsonResponse
-from django.shortcuts import render
-from value_of_information import Simulation
+import markdown
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 
-from forms import SimulationForm
-from value_of_information_webapp.simulation_to_io import simulation_to_io
+from value_of_information_webapp.forms import SimulationForm, CostBenefitForm
+from value_of_information_webapp.models import PersistedQuery
+from value_of_information_webapp.query import Query
 
-INITIAL_FORM_VALUES = {
-	'max_iterations': 10,
-	'lognormal_prior_mu': 1,
-	'lognormal_prior_sigma': 1,
-	'population_std_dev': 20,
-	'study_sample_size': 100,
-	'bar': 5,
-}
+QUERY_EQUIV_CLASSES = os.environ.get('QUERY_EQUIV_CLASSES', False)
+
+# Convert to an html file at runtime to play nice with Django's templating
+# (there's probably a better way to do this)
+markdown.markdownFromFile(
+	input='value_of_information_webapp/templates/components/explainer_text.md',
+	output='value_of_information_webapp/templates/components/explainer_text.html',
+	encoding='utf8',
+)
 
 
 def home(request):
-	if request.method == 'POST':
-		parameters = dict(request.POST)
-		del parameters['csrfmiddlewaretoken']
-		parameters = str(parameters)
-		try:
-			# Development
-			application_hash = subprocess.check_output(
-				['git', 'rev-parse', 'HEAD']).decode().strip()
-		except subprocess.CalledProcessError:
-			# Production (with Dokku)
-			application_hash = os.environ.get('GIT_REV')
-
-		query_uid = application_hash + parameters
-		# We use hashblib because we don't want Python hash randomization
-		# see: https://docs.python.org/3/reference/datamodel.html#object.__hash__
-		query_uid = hashlib.md5(query_uid.encode('utf-8')).hexdigest()
-
-		simulation_form = SimulationForm(request.POST)
-		if not simulation_form.is_valid():
-			return render(request, 'pages/home.html', context={
-				'form': simulation_form
-			})
-
-		# todo refactor
-		max_iterations = simulation_form.cleaned_data['max_iterations']
-		study_sample_size = simulation_form.cleaned_data['study_sample_size']
-		population_std_dev = simulation_form.cleaned_data['population_std_dev']
-		bar = simulation_form.cleaned_data['bar']
-
-		normal_prior_mu = simulation_form.cleaned_data['normal_prior_mu']
-		normal_prior_sigma = simulation_form.cleaned_data['normal_prior_sigma']
-		lognormal_prior_mu = simulation_form.cleaned_data['lognormal_prior_mu']
-		lognormal_prior_sigma = simulation_form.cleaned_data['lognormal_prior_sigma']
-
-		if normal_prior_mu is not None and normal_prior_sigma is not None:
-			prior = scipy.stats.norm(normal_prior_mu, normal_prior_sigma)
-		elif lognormal_prior_mu is not None and lognormal_prior_sigma is not None:
-			prior = scipy.stats.lognorm(scale=np.exp(lognormal_prior_mu), s=lognormal_prior_sigma)
-		else:
-			raise Exception
-
-		simulation = Simulation(
-			prior=prior,
-			study_sample_size=study_sample_size,
-			population_std_dev=population_std_dev,
-			bar=bar)
-
-		task_id = django_q.tasks.async_task(simulation_to_io, simulation, max_iterations=max_iterations)
-
-		return render(request, 'pages/home.html', context={
-			'task_id': task_id,
-			'task_submitted': time.time(),
-			'form': simulation_form
-		})
-
 	return render(request, 'pages/home.html', context={
-		'form': SimulationForm(
-			initial=INITIAL_FORM_VALUES)
+		'simulation_form': SimulationForm(initial=SimulationForm.initial()),
+		'cost_benefit_form': CostBenefitForm(initial=CostBenefitForm.initial()),
 	})
 
 
-def get_result(request, task_id):
-	task = django_q.tasks.fetch(task_id)
+def submit(request):
+	if request.method == 'POST':
+		query = Query(request.POST)
+
+		if not query.is_valid():
+			return render(request, 'pages/home.html', context={
+				'simulation_form': query.sim_form,
+				'cost_benefit_form': query.cb_form,
+			})
+
+		query_id = query.equivalence_class_id()
+		if QUERY_EQUIV_CLASSES:
+			persisted_query = PersistedQuery.objects.filter(equivalence_class_id=query_id).first()
+			if persisted_query:
+				return redirect(persisted_query)
+
+		raw_form_data = dict(request.POST.items())
+		raw_form_data.pop("csrfmiddlewaretoken", None)
+
+		persisted_query = PersistedQuery(
+			equivalence_class_id=query_id,
+			raw_form_data_json=json.dumps(raw_form_data)
+		)
+
+		persisted_query.save()
+		q_task_id = query.send_to_queue(persisted_query_id=persisted_query.pk)
+		persisted_query.q_task_id = q_task_id
+		persisted_query.save()
+
+		return redirect(persisted_query)
+
+
+def query(request, id):
+	persisted_query = get_object_or_404(PersistedQuery, pk=id)
+	no_op = lambda x: x
+	forms_dict = json.loads(persisted_query.raw_form_data_json, parse_float=no_op, parse_int=no_op)
+	sim_form = SimulationForm(forms_dict)
+	cb_form = CostBenefitForm(forms_dict)
+
+	return render(request, 'pages/home.html', context={
+		'task_id': persisted_query.q_task_id.hex,
+		'query_created': persisted_query.created_at.timestamp(),
+		'simulation_form': sim_form,
+		'cost_benefit_form': cb_form,
+	})
+
+
+def task(request, id):
+	task = django_q.tasks.fetch(id)
+
 	if task is None:
 		q_size = django_q.tasks.queue_size()
 		return JsonResponse({'completed': False, 'queue_size': q_size, 'task_checked': time.time()})
 	else:
-		return JsonResponse(
-			{'completed': True, 'console_output': task.result, 'success': task.success,
-			 'time_taken': task.time_taken()})
+
+		return JsonResponse({
+			'completed': True,
+			'console_output': task.result["text_buffer"],
+			'return_value': task.result["return_value"],
+			'success': task.success,
+			'time_taken': task.time_taken()
+		})
+
+
+def csv(request, task_id):
+	p_query = PersistedQuery.objects.get(q_task_id=task_id)
+	response = HttpResponse(p_query.csvdata.string, content_type="text/csv")
+	response["Content-Disposition"] = f"attachment;filename=query_{p_query.pk}.csv"
+	return response

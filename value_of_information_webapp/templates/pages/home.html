@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 {% load tz %}
+{% load markdownify %}
 
 {% block content %}
 
-    <p class="mt-2">
+    <p class="mt-3">
         Calculate the expected value of receiving a signal.
     </p>
 
@@ -18,34 +20,112 @@
 
         <div class="card mb-2" id="resultContainer" style="visibility: hidden">
             <div class="card-header">Results</div>
-            <pre class="card-body" id="result"></pre>
+            <div class="card-body">
+                <h5>Expected benefit from signal: <span id="signal_benefit_number">None</span></h5>
+                <pre id="console_output"></pre>
+                <p><a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.</p>
+            </div>
         </div>
     {% endif %}
 
 
 
-    <form method="post">
-        {% crispy form %}
+    <form method="POST" action="{% url 'submit' %}" class="readable_width">
+        {% csrf_token %}
+        <div class="mb-5">
+            <h5 class="card-title">Simulation parameters</h5>
+            {% for field in simulation_form %}
+                {% if field.name == 'force_explicit' %}
+                    <div class="mt-3 mb-3 row">
+                        <div class="col-5">
+                            {{ field|add_label_class:"form-check-label" }}
+                        </div>
+                        <div class="col-2">
+                        </div>
+                        <div class="col-5">
+                            {{ field|add_class:"checkboxinput form-check-input" }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mt-3 mb-3 row">
+                        <div class="col-5">
+                            <div class="col-form-label">
+                                {% if field.field.explainer_text %}
+                                    <div class="accordion-button collapsed" data-bs-toggle="collapse"
+                                         data-bs-target="#accordion_collapse_{{ field.auto_id }}">
+                                        {{ field.label }}
+                                    </div>
+
+                                    <div class="accordion-collapse collapse"
+                                         id="accordion_collapse_{{ field.auto_id }}">
+                                        <div class="card-body">
+                                            {{ field.field.explainer_text|markdownify }}
+                                        </div>
+                                    </div>
+
+                                {% else %}
+                                    {{ field.label }}
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <pre class="col-form-label">{{ field.field.math_expr }}</pre>
+                        </div>
+                        <div class="col-5">
+                            {% if field.name == "prior_family" %}
+                                {{ field|add_class:"form-select" }}
+                            {% else %}
+                                {{ field|add_class:"form-control" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {{ simulation_form|as_crispy_errors:"bootstrap" }}
+        </div>
+
+        <div class="mt-5">
+            <h5 class="card-title">Cost-benefit analysis (optional)</h5>
+            <p>The prior and bar must be expressed in <code>value_units</code> per <code>money_units</code> spent</p>
+            {% for field in cost_benefit_form %}
+                {{ field|as_crispy_field }}
+            {% endfor %}
+
+            <div class="mt-3 mb-3 row">
+                <div class="col"></div>
+                <div class="col">
+                    <input type="submit" name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit">
+                </div>
+            </div>
+            {{ cost_benefit_form|as_crispy_errors:"bootstrap" }}
+        </div>
     </form>
 
+    {% include "components/explainer.html" %}
+
+    {% include "components/feedback-form.html" %}
 
     <script>
         let wait_ms = 100
         const max_wait_ms = 3000
         {% if task_id %}
-            const submitted_at = new Date("{{ task_submitted }}" * 1000)
+            const query_created_at = new Date("{{ query_created }}" * 1000)
         {% endif %}
         function check_on_background_task(id) {
             console.log('checking on task', id);
             $.ajax(
-                {url: '/get_result/' + id}
+                {url: "/task/" + id}
             ).done(function (data) {
                 if (data.completed) {
                     task_status = {
-                        'completed': data.done, 'success': data.success,
+                        'completed': data.done,
+                        'success': data.success,
                         'time_taken': data.time_taken
                     }
-                    $("#result").text(data.console_output)
+                    $("#console_output").text(data.console_output)
+                    $("#signal_benefit_number").text(data.return_value.mean_signal_benefit.toPrecision(5))
                     $("#resultContainer").css('visibility', 'visible')
                     if (data.success) {
                         $("#statusContainer").addClass('border-success')
@@ -55,14 +135,15 @@
 
                 } else {
                     const checked_at = new Date(data.task_checked * 1000)
-                    const submitted_string = `${submitted_at.toLocaleTimeString()} (${formatDate(submitted_at)})`
+                    const submitted_string = `${query_created_at.toLocaleTimeString()} (${formatDate(query_created_at)})`
                     const checked_string = `${checked_at.toLocaleTimeString()}`
                     task_status = {
-                        'completed': data.completed, 'queue_size': data.queue_size,
+                        'completed': data.completed,
+                        'queue_size': data.queue_size,
                         'last_checked': checked_string,
                         'submitted': submitted_string
                     }
-                    wait_ms = Math.min(wait_ms*1.2,max_wait_ms)
+                    wait_ms = Math.min(wait_ms * 1.2, max_wait_ms)
                     setTimeout(check_on_background_task, wait_ms, id)
                 }
                 $("#status").text(JSON.stringify(task_status, null, 4))

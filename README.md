@@ -1,3 +1,11 @@
+# Code structure
+
+A Django app that acts as a wrapper around the package `value-of-information`. That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
+
+The initial skeleton was set up using Cookiecutter Django. See `README_cookiecutter.md`.
+
+The best entrypoint into the code is probably `value_of_information_webapp/views.py`.
+
 # Deployment
 
 Deployed using [Dokku](https://github.com/dokku/dokku), currently on an AWS EC2 instance.
@@ -16,6 +24,8 @@ poetry run python manage.py migrate # uses SQLite locally
 ```
 
 ## Execution
+
+The application uses a task queue. The workers processing the tasks need to be started separately with `manage.py qcluster`.
 
 ```shell
 # In a first shell

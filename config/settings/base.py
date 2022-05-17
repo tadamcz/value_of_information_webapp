@@ -68,11 +68,14 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "django_q"
+    "django_q",
+    "widget_tweaks",
+    'markdownify.apps.MarkdownifyConfig',
 ]
 
 LOCAL_APPS = [
     "value_of_information_webapp.users",
+    "value_of_information_webapp"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -273,7 +276,21 @@ Q_CLUSTER = {
     'name': 'DjangORM',
     'max_attempts':1,
     'ack_failures': True,
-    'timeout': None,
-    'retry': int(1e9), # 1 billion seconds = 31 years
-    'orm': 'default'
+    'orm': 'default',
+    # Currently, we need to save unlimited tasks; otherwise, query links would eventually break.
+    'save_limit': 0,
+
+    # Tasks should never time out and never be retried.
+    # But `retry` defaults to 60 and must be bigger
+    # than the time it takes to complete longest task.
+    # Therefore, we use this hack.
+    # 1 billion seconds = 31 years
+    'timeout': int(1e9) - 1,
+    'retry': int(1e9),
+}
+
+MARKDOWNIFY = {
+  "default": {
+     "WHITELIST_TAGS": ["a", "p", "h1", "code"]
+  },
 }
