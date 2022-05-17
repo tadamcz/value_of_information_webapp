@@ -1,6 +1,6 @@
 # Code structure
 
-A Django app that acts as a wrapper around the package `value-of-information`. That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
+A Django app that acts as a wrapper around the package `value-of-information` ([tadamcz/value-of-information](https://github.com/tadamcz/value-of-information)). That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
 
 The initial skeleton was set up using Cookiecutter Django. See `README_cookiecutter.md`.
 
@@ -36,5 +36,5 @@ poetry run python manage.py runserver
 ```
 
 
-# Funding
+# Origin of this project
 This tool was developed under contract for [Open Philanthropy](https://www.openphilanthropy.org/). Open Philanthropy plans to use this tool as one input into the decision of whether to fund randomized trials in global health or development. Because the concept is quite general, we hope that the tool can also be useful to others.
