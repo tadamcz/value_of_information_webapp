@@ -80,4 +80,4 @@ The cost-benefit analysis assumes:
 - `T` and the bar are expressed in terms of value realised _per unit of capital_. For example, "deaths averted per million dollars" or "new clients per dollar".
 - The decision-maker can choose to spend `signal_cost` to acquire the signal. All other capital is spent implementing the option with the highest expected value.
 
-This model is well-suited when choosing between different options that can absorb flexible amounts of capital (e.g. venture capital, ad spend, or philanthropy). However, it should be easy to model the costs and benefits differently yourself, while leaving unchanged the functionality concerned with quantifying the value of information, which is more general.
+This model is well-suited when choosing between different options that can absorb flexible amounts of capital (e.g. venture capital, ad spend, or philanthropy). However, it should be easy to model the costs and benefits differently yourself, while still using the VOI simulation, which is more generally applicable.
