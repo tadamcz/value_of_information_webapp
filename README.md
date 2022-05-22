@@ -8,7 +8,7 @@ The best entrypoint into the code is probably `value_of_information_webapp/views
 
 # Deployment
 
-Deployed using [Dokku](https://github.com/dokku/dokku), currently on an AWS EC2 instance.
+Deployed using [Dokku](https://github.com/dokku/dokku), currently on an AWS EC2 instance. The files used by Dokku are `.buildpacks`, `.env`, and `app.json`.
 
 # Local development
 
