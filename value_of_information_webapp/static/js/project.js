@@ -28,11 +28,6 @@ function formatDate(date) {
     }
 }
 
-$("#explainer_accordion").on("show.bs.collapse", function () {
-    $('html, body').animate({
-        scrollTop: ($('#explainer_accordion').offset().top - 10)
-    }, 200);
-})
 
 const prior_family_selector = $('select[name=prior_family]')
 

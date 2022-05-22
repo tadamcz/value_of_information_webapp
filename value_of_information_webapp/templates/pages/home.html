@@ -12,6 +12,8 @@
         use the package directly.
     </p>
 
+    {% include "components/explainer.html" %}
+
     {% if task_id %}
         <div class="card mb-2" id="statusContainer">
             <div class="card-header">Task status</div>
@@ -104,8 +106,6 @@
             {{ cost_benefit_form|as_crispy_errors:"bootstrap" }}
         </div>
     </form>
-
-    {% include "components/explainer.html" %}
 
     {% include "components/feedback-form.html" %}
 
