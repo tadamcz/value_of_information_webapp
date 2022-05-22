@@ -92,10 +92,17 @@
 
         <div class="mt-5">
             <h5 class="card-title">Cost-benefit analysis (optional)</h5>
-            <p>The prior and bar must be expressed in <code>value_units</code> per <code>money_units</code> spent</p>
-            {% for field in cost_benefit_form %}
-                {{ field|as_crispy_field }}
-            {% endfor %}
+            {{ cost_benefit_form.capital|as_crispy_field }}
+            {{ cost_benefit_form.signal_cost|as_crispy_field }}
+
+            <p>The parameters below have no effect on the numerical result,
+                but help make the results easier to interpret without errors.
+                <code>T</code> and <code>bar</code> must be expressed in <code>value_units</code> per
+                <code>money_units</code> spent.
+            </p>
+
+            {{ cost_benefit_form.value_units|as_crispy_field }}
+            {{ cost_benefit_form.money_units|as_crispy_field }}
 
             <div class="mt-3 mb-3 row">
                 <div class="col"></div>
