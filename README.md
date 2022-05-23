@@ -1,14 +1,12 @@
-# Code structure
-
 A Django app that acts as a wrapper around the package `value-of-information` ([tadamcz/value-of-information](https://github.com/tadamcz/value-of-information)). That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
 
 The initial skeleton was set up using Cookiecutter Django. See `README_cookiecutter.md`.
 
-The best entrypoint into the code is probably `value_of_information_webapp/views.py`.
+The best entrypoint into the code is probably [`views.py`](value_of_information_webapp/views.py).
 
 # Deployment
 
-Deployed using [Dokku](https://github.com/dokku/dokku), currently on an AWS EC2 instance. The files used by Dokku are `.buildpacks`, `.env`, and `app.json`.
+Deployed using [Dokku](https://github.com/dokku/dokku), an open source and customisable alternative to PaaS such as Heroku. It's currently deployed on an AWS EC2 instance. The files used by Dokku are `.buildpacks`, `.env`, and `app.json`.
 
 # Local development
 
