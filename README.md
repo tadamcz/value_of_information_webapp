@@ -1,5 +1,7 @@
 A Django app that acts as a wrapper around the package `value-of-information` ([tadamcz/value-of-information](https://github.com/tadamcz/value-of-information)). That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
 
+Queries take from a few seconds to many minutes to execute. Therefore, they are sent to a task queue (based on [Django-Q](https://github.com/Koed00/django-q)). Once a query completes, the results are displayed in the browser. 
+
 The initial skeleton was set up using Cookiecutter Django. See `README_cookiecutter.md`.
 
 The best entrypoint into the code is probably [`views.py`](value_of_information_webapp/views.py).
