@@ -25,7 +25,7 @@
         <div class="card mb-2" id="resultContainer" style="visibility: hidden">
             <div class="card-header">Results</div>
             <div class="card-body">
-                <h5>Expected benefit from signal: <span id="signal_benefit_number">None</span></h5>
+                <h5>Mean VOI: <span id="signal_benefit_number">None</span></h5>
                 <pre id="console_output"></pre>
                 <p><a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.</p>
             </div>
@@ -39,7 +39,7 @@
         <div class="mb-5">
             <h5 class="card-title">Simulation parameters</h5>
             {% for field in simulation_form %}
-                {% if field.name == 'force_explicit' %}
+                {% if field.name == 'explicit_bayes' %}
                     <div class="mt-3 mb-3 row">
                         <div class="col-5">
                             {{ field|add_label_class:"form-check-label" }}

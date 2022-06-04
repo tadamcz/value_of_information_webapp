@@ -73,7 +73,7 @@ VOI in a reference class following `Q(T)`).
 mean `T` and any prior distribution over `T`, `E[T|B=b]` is increasing in `b`. Therefore, by default, we run a numerical
 equation solver to find the threshold value `B=b_t`, such that `E[T|b]>bar` if and only if `b>b_t`.
 
-When `force_explicit` is selected, we don't run the numerical equation solver, but instead explicitly compute the
+When `explicit_bayes` is selected, we don't run the numerical equation solver, but instead explicitly compute the
 posterior probability distribution `P(T|b_i)` in each iteration.
 
 ### Cost-benefit analysis

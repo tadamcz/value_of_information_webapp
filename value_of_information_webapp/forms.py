@@ -13,7 +13,7 @@ class SimulationForm(forms.Form):
 	lognormal_prior_sd = forms.FloatField(required=False, label='Lognormal prior s.d.')
 	signal_sd = forms.FloatField(label="Signal standard deviation")
 	bar = forms.FloatField()
-	force_explicit = forms.BooleanField(required=False, label_suffix="")
+	explicit_bayes = forms.BooleanField(required=False, label_suffix="")
 
 	normal_prior_ev.math_expr = "E[T]"
 	normal_prior_sd.math_expr = "sd(T)"
@@ -39,7 +39,7 @@ class SimulationForm(forms.Form):
 			'lognormal_prior_sd': 4,
 			'signal_sd': 2,
 			'bar': 7,
-			'force_explicit': False,
+			'explicit_bayes': False,
 		}
 
 	def __init__(self, *args, **kwargs):
@@ -63,7 +63,7 @@ class SimulationForm(forms.Form):
 		normal_prior_sigma = self.cleaned_data['normal_prior_sd']
 		lognormal_prior_ev = self.cleaned_data['lognormal_prior_ev']
 		lognormal_prior_sd = self.cleaned_data['lognormal_prior_sd']
-		force_explicit = self.cleaned_data['force_explicit']
+		force_explicit_bayes = self.cleaned_data['explicit_bayes']
 		max_iterations = self.cleaned_data['max_iterations']
 
 		normal_params_given = normal_prior_mu is not None and normal_prior_sigma is not None
@@ -79,8 +79,8 @@ class SimulationForm(forms.Form):
 
 		if max_iterations is not None:
 			max_iterations_max_allowed = 1800
-			if force_explicit and max_iterations > max_iterations_max_allowed:
-				self.add_error(None, f"When 'force explicit' is enabled, "
+			if force_explicit_bayes and max_iterations > max_iterations_max_allowed:
+				self.add_error(None, f"When 'explicit bayes' is enabled, "
 									 f"you cannot set max iterations to more than {max_iterations_max_allowed}, "
 									 f"because it could take hours to run.")
 				is_valid = False

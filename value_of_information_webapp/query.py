@@ -6,10 +6,10 @@ import django_q
 import numpy as np
 import scipy
 from django.http.request import QueryDict
-from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
+from value_of_information.cost_benefit import CostBenefitParameters, CostBenefitsExecutor
 
 import value_of_information.utils
-from value_of_information.simulation import SimulationInputs, SimulationExecutor
+from value_of_information.simulation import SimulationParameters, SimulationExecutor
 
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
 from value_of_information_webapp.models import CSVData, PersistedQuery
@@ -37,7 +37,7 @@ class Query:
 		bar = sim_form.cleaned_data['bar']
 		signal_sd = sim_form.cleaned_data['signal_sd']
 		prior_family = sim_form.cleaned_data["prior_family"]
-		force_explicit = sim_form.cleaned_data['force_explicit']
+		force_explicit_bayes = sim_form.cleaned_data['explicit_bayes']
 
 		if prior_family == "normal":
 			prior_mu = sim_form.cleaned_data['normal_prior_ev']
@@ -52,17 +52,17 @@ class Query:
 			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
 			prior = value_of_information.utils.lognormal(lnorm_prior_mu, lnorm_prior_sigma)
 
-		simulation_inputs = SimulationInputs(
+		simulation_inputs = SimulationParameters(
 			prior=prior,
 			sd_B=signal_sd,
 			bar=bar)
 
 		sim_executor = SimulationExecutor(
-			simulation_inputs, force_explicit=force_explicit
+			simulation_inputs, force_explicit_bayes=force_explicit_bayes
 		)
 
 		if cb_form.is_full():
-			cb_inputs = CostBenefitInputs(
+			cb_inputs = CostBenefitParameters(
 				**cb_form.cleaned_data
 			)
 			cb_executor = CostBenefitsExecutor(inputs=cb_inputs)
@@ -111,7 +111,7 @@ class Query:
 
 		CSVData(query=persisted_query, string=sim_run.csv()).save()
 
-		return {"mean_signal_benefit": sim_run.mean_benefit_signal()}
+		return {"mean_signal_benefit": sim_run.mean_voi()}
 
 	def is_valid(self):
 		simulation_form_valid = self.sim_form.is_valid()
