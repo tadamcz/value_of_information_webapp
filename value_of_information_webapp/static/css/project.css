@@ -18,7 +18,7 @@
     white-space: normal;
 }
 
-.readable_width {
+#main_content_container > :not(#resultContainer, #statusContainer) {
     max-width: 50em;
 }
 
