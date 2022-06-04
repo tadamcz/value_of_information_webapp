@@ -7,6 +7,8 @@ import numpy as np
 import scipy
 from django.http.request import QueryDict
 from value_of_information.signal_cost_benefit import CostBenefitInputs, CostBenefitsExecutor
+
+import value_of_information.utils
 from value_of_information.simulation import SimulationInputs, SimulationExecutor
 
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
@@ -48,7 +50,7 @@ class Query:
 			prior_sd = sim_form.cleaned_data['lognormal_prior_sd']
 
 			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
-			prior = scipy.stats.lognorm(scale=np.exp(lnorm_prior_mu), s=lnorm_prior_sigma)
+			prior = value_of_information.utils.lognormal(lnorm_prior_mu, lnorm_prior_sigma)
 
 		simulation_inputs = SimulationInputs(
 			prior=prior,
