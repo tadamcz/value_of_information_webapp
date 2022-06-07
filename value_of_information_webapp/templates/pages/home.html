@@ -27,7 +27,13 @@
             <div class="card-body">
                 <h5>Mean VOI: <span id="signal_benefit_number">None</span></h5>
                 <pre id="console_output"></pre>
-                <p><a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.</p>
+                <p>
+                    <a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.
+                </p>
+                <p>
+                    Tip: you can share your results with anyone using the current url:
+                    <code>{{ request.build_absolute_uri }}</code>
+                </p>
             </div>
         </div>
     {% endif %}
