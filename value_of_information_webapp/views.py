@@ -83,7 +83,8 @@ def task(request, id):
 		q_size = django_q.tasks.queue_size()
 		return JsonResponse({'completed': False, 'queue_size': q_size, 'task_checked': time.time()})
 	else:
-
+		# Explicitly set this so exceptions strings can be returned in the text buffer
+		task.success = task.result["success"]
 		return JsonResponse({
 			'completed': True,
 			'console_output': task.result["text_buffer"],

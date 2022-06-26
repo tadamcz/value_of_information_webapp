@@ -27,7 +27,7 @@
             <div class="card-body">
                 <h5>Mean VOI: <span id="signal_benefit_number">None</span></h5>
                 <pre id="console_output"></pre>
-                <p>
+                <p id="csv-download-link">
                     <a href="{% url "csv" task_id %}">Download</a> simulation data as CSV.
                 </p>
                 <p>
@@ -142,12 +142,18 @@
                         'time_taken': data.time_taken
                     }
                     $("#console_output").text(data.console_output)
-                    $("#signal_benefit_number").text(data.return_value.mean_signal_benefit.toPrecision(5))
+                    if (data.return_value){
+                        $("#signal_benefit_number").text(data.return_value.mean_signal_benefit.toPrecision(5))
+                    }
+                    else {
+                        $("#signal_benefit_number").text("None")
+                    }
                     $("#resultContainer").css('visibility', 'visible')
                     if (data.success) {
                         $("#statusContainer").addClass('border-success')
                     } else {
                         $("#statusContainer").addClass('border-danger')
+                        $("#csv-download-link").hide()
                     }
 
                 } else {

@@ -285,6 +285,7 @@ Q_CLUSTER = {
     # than the time it takes to complete longest task.
     # Therefore, we use this hack.
     # 1 billion seconds = 31 years
+    # todo: I think this may not be necessary and is taken care of by ack_failures above
     'timeout': int(1e9) - 1,
     'retry': int(1e9),
 }
