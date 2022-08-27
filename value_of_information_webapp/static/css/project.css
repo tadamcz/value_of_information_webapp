@@ -42,3 +42,7 @@ form .accordion-button:not(.collapsed) {
     background-color: inherit;
     box-shadow: inherit;
 }
+
+.grecaptcha-badge {
+    visibility: hidden;
+}
