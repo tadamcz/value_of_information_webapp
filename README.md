@@ -1,6 +1,8 @@
 # Code structure
 
-A Django app that acts as a wrapper around the package `value-of-information` ([tadamcz/value-of-information](https://github.com/tadamcz/value-of-information)). That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode.
+A Django app that acts as a wrapper around the package `value-of-information` ([tadamcz/value-of-information](https://github.com/tadamcz/value-of-information)).
+
+That package is included as a git submodule, and listed in `pyproject.toml` as a local dependency in editable mode. You'll need to initialize and update that submodule. It's easiest to do this at the beginning by passing `--recurse-submodules` to the `git clone` command. 
 
 The initial skeleton was set up using Cookiecutter Django. See `README_cookiecutter.md`.
 
