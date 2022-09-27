@@ -33,7 +33,7 @@ class SimulationForm(forms.Form):
 	@staticmethod
 	def initial():
 		return {
-			'max_iterations': 10_000,
+			'max_iterations': 100_000,
 			'prior_family':'lognormal',
 			'lognormal_prior_ev': 5,
 			'lognormal_prior_sd': 4,

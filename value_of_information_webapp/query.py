@@ -22,7 +22,7 @@ class Query:
 	We need to use a few static methods in here, or the args that are serialized and stored in the db
 	become huge.
 	"""
-	CONVERGENCE_TARGET = 0.05
+	CONVERGENCE_TARGET = 0.01
 
 	def __init__(self, query_dict: QueryDict):
 		self.query_dict = query_dict
