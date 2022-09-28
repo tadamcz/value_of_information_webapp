@@ -12,6 +12,8 @@ The best entrypoint into the code is probably `value_of_information_webapp/views
 
 Deployed using [Dokku](https://github.com/dokku/dokku), currently on an AWS EC2 instance. The files used by Dokku are `.buildpacks`, `.env`, and `app.json`.
 
+The username for `ssh`ing into the AWS EC2 instance is `ubuntu`. This is the default for this type of instance.
+
 # Local development
 
 ## Installation
