@@ -14,8 +14,7 @@ from value_of_information.simulation import SimulationParameters, SimulationExec
 from value_of_information_webapp.forms import CostBenefitForm, SimulationForm
 from value_of_information_webapp.models import CSVData, PersistedQuery
 from value_of_information_webapp.to_buffer import to_buffer
-from value_of_information_webapp.utils import utils
-
+from nonstd.distributions import lognormal_mu_sigma
 
 class Query:
 	"""
@@ -49,7 +48,7 @@ class Query:
 			prior_ev = sim_form.cleaned_data['lognormal_prior_ev']
 			prior_sd = sim_form.cleaned_data['lognormal_prior_sd']
 
-			lnorm_prior_mu, lnorm_prior_sigma = utils.lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
+			lnorm_prior_mu, lnorm_prior_sigma = lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
 			prior = value_of_information.utils.lognormal(lnorm_prior_mu, lnorm_prior_sigma)
 
 		simulation_inputs = SimulationParameters(

@@ -28,6 +28,7 @@ psycopg2 = "^2.9.3"
 django-widget-tweaks = "^1.4.12"
 Markdown = "^3.3.7"
 django-markdownify = "^0.9.1"
+nonstd = { git = "https://github.com/tadamcz/nonstd", rev = "fa3c3f3696990b8b6d12ac23bb3697defa8574c9" }
 
 [tool.poetry.dev-dependencies]
 Werkzeug = {version = "2.0", extras = ["watchdog"]}
