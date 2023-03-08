@@ -30,7 +30,7 @@ Markdown = "^3.3.7"
 django-markdownify = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
-Werkzeug = {version = "2.0.", extras = ["watchdog"]}
+Werkzeug = {version = "2.0", extras = ["watchdog"]}
 ipdb = "0.13.9"
 psycopg2-binary = "2.9.3"
 mypy = "0.942"
