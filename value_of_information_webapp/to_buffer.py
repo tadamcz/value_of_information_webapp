@@ -18,7 +18,7 @@ def to_buffer(_callable: Callable, callable_args=None, callable_kwargs=None):
 		except Exception as e:
 			# Any uncaught errors that reach this point simply get printed. Because we're not re-raising the
 			# exceptions (which would cause the buffer to get lost) we need to explicitly return a 'success' key.
-			print_wrapped(str(e))
+			print_wrapped(f"{type(e).__name__}: {e}")
 			return_value = None
 			success = False
 		return {"success": success, "text_buffer": buffer.getvalue(), "return_value": return_value}

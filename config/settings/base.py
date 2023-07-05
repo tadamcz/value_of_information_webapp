@@ -71,6 +71,7 @@ THIRD_PARTY_APPS = [
     "django_q",
     "widget_tweaks",
     'markdownify.apps.MarkdownifyConfig',
+    "capture_tag"
 ]
 
 LOCAL_APPS = [
@@ -292,6 +293,6 @@ Q_CLUSTER = {
 
 MARKDOWNIFY = {
   "default": {
-     "WHITELIST_TAGS": ["a", "p", "h1", "code"]
+     "WHITELIST_TAGS": ["code"]
   },
 }

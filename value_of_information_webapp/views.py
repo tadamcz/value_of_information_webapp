@@ -13,14 +13,6 @@ from value_of_information_webapp.query import Query
 
 QUERY_EQUIV_CLASSES = os.environ.get('QUERY_EQUIV_CLASSES', False)
 
-# Convert to an html file at runtime to play nice with Django's templating
-# (there's probably a better way to do this)
-markdown.markdownFromFile(
-	input='value_of_information_webapp/templates/components/explainer_text.md',
-	output='value_of_information_webapp/templates/components/explainer_text.html',
-	encoding='utf8',
-)
-
 
 def home(request):
 	return render(request, 'pages/home.html', context={

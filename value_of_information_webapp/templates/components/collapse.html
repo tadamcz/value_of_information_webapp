@@ -1,0 +1,22 @@
+<div class="accordion {{ class }}" id="{{ id }}_container">
+  <div class="accordion-item">
+    <span class="accordion-header" id="{{ id }}_header" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Click to expand/collapse">
+      <button class="accordion-button collapsed border-bottom" type="button" data-bs-toggle="collapse"
+              data-bs-target="#{{ id }}_collapse" aria-expanded="false"
+              aria-controls="{{ id }}_collapse"
+              {#  Setting just for this element instead of via Sass, because we might want to use more standard boostrap accordions elsewhere #}
+              style="--bs-accordion-btn-padding-y: .375rem;" {# default is 1 rem, setting to same value as input-btn-padding-y #}
+      >
+           {{ header}}
+      </button>
+    </span>
+    <div id="{{ id }}_collapse"
+         class="accordion-collapse collapse {% if expand %}show{% endif %}"
+         aria-labelledby="{{ id }}_header">
+      <div class="accordion-body">
+        {{ body }}
+      </div>
+    </div>
+  </div>
+</div>

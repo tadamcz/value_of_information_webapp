@@ -56,7 +56,7 @@ We make some simplifying assumptions:
 * The problem is one-dimensional, i.e. `T` and `B` follow one-dimensional distributions.
 * Currently, only one distribution family is supported for `B`: `B` has a normal distribution with unknown mean `T` and
   known standard deviation.
-* On this website, the prior over `T` must be normal or log-normal. The underlying Python package supports any prior
+* On this website, the prior over `T` must be normal, log-normal, or [metalog](https://github.com/tadamcz/metalogistic). The underlying Python package supports any prior
   specified as a one-dimensional SciPy continuous distribution.
 
 This tool uses a simulation to approximate the expectation mentioned in the previous section. Specifically, for each

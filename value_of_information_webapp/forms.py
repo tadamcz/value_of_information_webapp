@@ -6,7 +6,7 @@ from django import forms
 class SimulationForm(forms.Form):
 	max_iterations = forms.IntegerField(required=False)
 
-	prior_family = forms.ChoiceField(choices=[('normal', 'Normal'), ('lognormal', 'Lognormal')])
+	prior_family = forms.ChoiceField(choices=[('normal', 'Normal'), ('lognormal', 'Lognormal'), ('metalog', "Metalog")])
 	normal_prior_ev = forms.FloatField(required=False, label='Normal prior expectation')
 	normal_prior_sd = forms.FloatField(required=False, label='Normal prior s.d.')
 	lognormal_prior_ev = forms.FloatField(required=False, label='Lognormal prior expectation')
@@ -14,6 +14,7 @@ class SimulationForm(forms.Form):
 	signal_sd = forms.FloatField(label="Signal standard deviation")
 	bar = forms.FloatField()
 	explicit_bayes = forms.BooleanField(required=False, label_suffix="")
+	metalog_prior_data = forms.JSONField(required=False, widget=forms.HiddenInput())
 
 	normal_prior_ev.math_expr = "E[T]"
 	normal_prior_sd.math_expr = "sd(T)"
@@ -37,7 +38,7 @@ class SimulationForm(forms.Form):
 			'prior_family':'lognormal',
 			'lognormal_prior_ev': 5,
 			'lognormal_prior_sd': 4,
-			'signal_sd': 2,
+			'signal_sd': 4,
 			'bar': 7,
 			'explicit_bayes': False,
 		}
@@ -84,6 +85,10 @@ class SimulationForm(forms.Form):
 									 f"you cannot set max iterations to more than {max_iterations_max_allowed}, "
 									 f"because it could take hours to run.")
 				is_valid = False
+
+		if prior_family == "metalog" and not self.cleaned_data['metalog_prior_data']:
+			self.add_error(None, "We couldn't find the fitted metalog data.")
+			is_valid = False
 
 		return is_valid
 

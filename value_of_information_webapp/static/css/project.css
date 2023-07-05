@@ -14,9 +14,6 @@
     white-space: pre-line;
 }
 
-#explainer_accordion code {
-    white-space: normal;
-}
 
 #main_content_container > :not(#resultContainer, #statusContainer) {
     max-width: 50em;
@@ -25,10 +22,6 @@
 code {
     color: black;
     background: #f2f1f1;
-    word-wrap: break-word;
-    box-decoration-break: clone;
-    padding: .1rem .3rem .2rem;
-    border-radius: .2rem;
 }
 
 /* Override bootstrap defaults for .accordion-button */

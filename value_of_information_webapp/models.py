@@ -4,7 +4,7 @@ from django.db import models
 class PersistedQuery(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	q_task_id = models.UUIDField(null=True)
-	raw_form_data_json = models.CharField(max_length=2_000)
+	raw_form_data_json = models.CharField(max_length=10_000)
 
 	# equal to: hash(query+hash(application))
 	#

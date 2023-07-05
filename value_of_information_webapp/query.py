@@ -3,6 +3,7 @@ import os
 import subprocess
 
 import django_q
+import metalogistic
 import numpy as np
 import scipy
 from django.http.request import QueryDict
@@ -51,6 +52,10 @@ class Query:
 			lnorm_prior_mu, lnorm_prior_sigma = lognormal_mu_sigma(mean=prior_ev, sd=prior_sd)
 			prior = value_of_information.utils.lognormal(lnorm_prior_mu, lnorm_prior_sigma)
 
+		if prior_family == "metalog":
+			params = sim_form.cleaned_data['metalog_prior_data']["fitted"]
+			prior = metalogistic.MetaLogistic(a_vector=params['a_vector'], lbound=params['lbound'], ubound=params['ubound'])
+
 		simulation_inputs = SimulationParameters(
 			prior=prior,
 			sd_B=signal_sd,
@@ -79,7 +84,7 @@ class Query:
 				'cb_form': self.cb_form,
 				'convergence_target': self.CONVERGENCE_TARGET,
 				'persisted_query_id': persisted_query_id
-			}
+			},
 		)
 
 		return task_id
