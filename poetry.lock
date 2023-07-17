@@ -1139,14 +1139,18 @@ version = "0.1.6"
 description = "Top-level package for float-table."
 optional = false
 python-versions = ">=3.8,<4"
-files = [
-    {file = "float_table-0.1.6-py3-none-any.whl", hash = "sha256:501722780a82e6c558a837bd5e8a50fb4298f9509f683951a2ae3a825cf19762"},
-    {file = "float_table-0.1.6.tar.gz", hash = "sha256:be3bda0f057f8547e745f220b5e0f0675c339eec278b70faf0a6cdfd8a2dfecc"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-numpy = ">=1,<2"
-pandas = ">=2,<3"
+numpy = "^1"
+pandas = "^2"
+
+[package.source]
+type = "git"
+url = "https://github.com/tadamcz/float-table"
+reference = "main"
+resolved_reference = "350b148b5e1ea3ff79a8ad766ebd1f15c6432691"
 
 [[package]]
 name = "fonttools"
@@ -3195,7 +3199,7 @@ develop = true
 
 [package.dependencies]
 bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "26960486b84db4da6d32949c939822d882d06aba"}
-float-table = "^0.1.6"
+float-table = {git = "https://github.com/tadamcz/float-table", rev = "main"}
 jinja2 = "^3.1.2"
 numpy = "^1.22.3"
 pandas = "^2"
