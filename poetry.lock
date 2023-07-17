@@ -749,13 +749,13 @@ graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
 name = "distlib"
-version = "0.3.6"
+version = "0.3.7"
 description = "Distribution utilities"
 optional = false
 python-versions = "*"
 files = [
-    {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
-    {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
+    {file = "distlib-0.3.7-py2.py3-none-any.whl", hash = "sha256:2e24928bc811348f0feb63014e97aaae3037f2cf48712d51ae61df7fd6075057"},
+    {file = "distlib-0.3.7.tar.gz", hash = "sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8"},
 ]
 
 [[package]]
@@ -1135,22 +1135,18 @@ test = ["pytest-cov"]
 
 [[package]]
 name = "float-table"
-version = "0.1.6"
+version = "0.1.7"
 description = "Top-level package for float-table."
 optional = false
 python-versions = ">=3.8,<4"
-files = []
-develop = false
+files = [
+    {file = "float_table-0.1.7-py3-none-any.whl", hash = "sha256:0d50f2da0a0a4b5d807ed5f6ca90d2b2b55874f8798b5103ffa7d0f8327d776e"},
+    {file = "float_table-0.1.7.tar.gz", hash = "sha256:23f7998f29def460fb9ce5dd92c07ccd88756c74dc8d29f1d1a7f6ca69f30b22"},
+]
 
 [package.dependencies]
-numpy = "^1"
-pandas = "^2"
-
-[package.source]
-type = "git"
-url = "https://github.com/tadamcz/float-table"
-reference = "main"
-resolved_reference = "350b148b5e1ea3ff79a8ad766ebd1f15c6432691"
+numpy = ">=1,<2"
+pandas = ">=2,<3"
 
 [[package]]
 name = "fonttools"
@@ -3199,7 +3195,7 @@ develop = true
 
 [package.dependencies]
 bayes_continuous = {git = "https://github.com/tadamcz/bayes-continuous.git", rev = "26960486b84db4da6d32949c939822d882d06aba"}
-float-table = {git = "https://github.com/tadamcz/float-table", rev = "main"}
+float-table = "^0.1.7"
 jinja2 = "^3.1.2"
 numpy = "^1.22.3"
 pandas = "^2"
